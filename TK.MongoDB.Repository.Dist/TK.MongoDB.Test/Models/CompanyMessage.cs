@@ -4,21 +4,13 @@ using TK.MongoDB.Models;
 
 namespace TK.MongoDB.Test.Models
 {
-    public class Message : BaseEntity<ObjectId>
+    public class CompanyMessage : BaseEntity<ObjectId>
     {
         [BsonRequired]
         public string Text { get; set; }
 
 
         [Distribute]
-        public long Caterer { get; set; }
-
-
-        [Distribute]
-        public long Client { get; set; }
-
-
-        [Distribute(Level = 1)]
-        public long? Order { get; set; }
+        public long Company { get; set; }
     }
 }

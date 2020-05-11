@@ -97,9 +97,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MasterUnitTest.cs" />
+    <Compile Include="Models\CompanyMessage.cs" />
     <Compile Include="Models\Message.cs" />
-    <Compile Include="RepoUnitTest.cs" />
+    <Compile Include="MessageUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CompanyMessageUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

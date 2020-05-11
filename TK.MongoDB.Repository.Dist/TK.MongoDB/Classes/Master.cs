@@ -113,8 +113,8 @@ namespace TK.MongoDB.Classes
                     //Get Max level key for identifiying correct collection to insert message into.
                     var validKeys = KeyValues.Where(x => x.Value != null).Select(x => x.Key).ToList();
                     var toAggrDist = Distribution.Where(v => validKeys.Contains(v.Key)).ToDictionary(x => x.Key, x => x.Value);
-                    var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-                    KeyValues.Remove(MaxKeyValue);
+                    var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r);
+                    if (MaxKeyValue.Value != 0) KeyValues.Remove(MaxKeyValue.Key);
 
                     BsonDocument newSearchDocument = Utility.CreateSearchBsonDocument(KeyValues);
                     var query2 = Collection.Find(newSearchDocument);
@@ -123,9 +123,11 @@ namespace TK.MongoDB.Classes
                     result = query2.FirstOrDefault().GetValue("CollectionId").AsString;
                 }
                 else if (count > 1) throw new Exception("More than one collections found for the criterion");
-
-                //Get CollectionId
-                result = query.FirstOrDefault().GetValue("CollectionId").AsString;
+                else
+                {
+                    //Get CollectionId
+                    result = query.FirstOrDefault().GetValue("CollectionId").AsString;
+                }
             }
 
             if (result == null) throw new ArgumentException("Collection with the criterion does not exists");

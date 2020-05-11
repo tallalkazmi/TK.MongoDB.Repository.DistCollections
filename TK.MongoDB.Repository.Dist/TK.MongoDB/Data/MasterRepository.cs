@@ -18,7 +18,7 @@ namespace TK.MongoDB.Data
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
         }
 
-        public async Task<IEnumerable<object>> Get()
+        public async Task<IEnumerable<object>> GetAsync()
         {
             var records = await Collection.Find(new BsonDocument())
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
@@ -28,7 +28,7 @@ namespace TK.MongoDB.Data
             return Utility.Convert<object>(records);
         }
 
-        public async Task<IEnumerable<object>> Get(IDictionary<string, object> keyValuePairs)
+        public async Task<IEnumerable<object>> GetAsync(IDictionary<string, object> keyValuePairs)
         {
             var searchDocument = Utility.CreateSearchBsonDocument(keyValuePairs);
             var records = await Collection.Find(searchDocument)
@@ -39,7 +39,7 @@ namespace TK.MongoDB.Data
             return Utility.Convert<object>(records);
         }
 
-        public async Task<IEnumerable<object>> Get(FilterDefinition<BsonDocument> filter)
+        public async Task<IEnumerable<object>> GetAsync(FilterDefinition<BsonDocument> filter)
         {
             var records = await Collection.Find(filter)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
@@ -49,7 +49,7 @@ namespace TK.MongoDB.Data
             return Utility.Convert<object>(records);
         }
 
-        public async Task<bool> Update(string collectionId, string name)
+        public async Task<bool> UpdateAsync(string collectionId, string name)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
             UpdateResult updateResult = await Collection.UpdateOneAsync(filter, Builders<BsonDocument>.Update.Set("Name", name).Set("UpdationDate", DateTime.UtcNow));
