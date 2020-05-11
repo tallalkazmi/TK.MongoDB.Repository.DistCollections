@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace TK.MongoDB.Data
@@ -24,9 +24,9 @@ namespace TK.MongoDB.Data
         /// <summary>
         /// Gets documents satisfying filter condition
         /// </summary>
-        /// <param name="filter">Lambda expression</param>
+        /// <param name="filter">Filter Definition</param>
         /// <returns>Documents</returns>
-        Task<IEnumerable<object>> Get(Expression<Func<BsonDocument, bool>> filter);
+        Task<IEnumerable<object>> Get(FilterDefinition<BsonDocument> filter);
 
         /// <summary>
         /// Updates 'Name' of a document in the collection identified by 'Collection Id'

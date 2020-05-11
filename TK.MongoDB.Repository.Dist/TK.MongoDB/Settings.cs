@@ -2,9 +2,9 @@
 {
     public class Settings
     {
-        protected static string ConnectionStringSettingName = "MongoDocConnection";
-        protected static int ExpireAfterSeconds = 15778463; //6 months
-        protected static string MasterCollectionName = "master";
+        protected static string ConnectionStringSettingName { get; private set; } = "MongoDocConnection";
+        protected static int ExpireAfterSeconds { get; private set; } = 15778463; //6 months
+        protected static string MasterCollectionName { get; private set; } = "master";
 
         /// <summary>
         /// Database & Collection configurations

@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TK.MongoDB.Classes;
 
@@ -40,7 +39,7 @@ namespace TK.MongoDB.Data
             return Utility.Convert<object>(records);
         }
 
-        public async Task<IEnumerable<object>> Get(Expression<Func<BsonDocument, bool>> filter)
+        public async Task<IEnumerable<object>> Get(FilterDefinition<BsonDocument> filter)
         {
             var records = await Collection.Find(filter)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
