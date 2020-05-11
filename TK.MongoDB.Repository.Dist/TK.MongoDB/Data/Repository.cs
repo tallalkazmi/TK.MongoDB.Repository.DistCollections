@@ -11,21 +11,27 @@ namespace TK.MongoDB.Data
 {
     public class Repository<T> : Settings, IRepository<T> where T : BaseEntity<ObjectId>
     {
+        private readonly Master Master;
+        private readonly Expression<Func<T, bool>> IsDeleted;
+
         protected MongoDBContext Context { get; private set; }
         protected IMongoCollection<T> Collection { get; private set; }
-        private readonly Master Master;
 
         public Repository()
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
             Master = new Master();
+            IsDeleted = x => x.Deleted == false;
         }
 
         public async Task<T> FindAsync(string collectionId, Expression<Func<T, bool>> condition)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
 
-            var query = await Collection.FindAsync<T>(condition);
+            var body = Expression.AndAlso(condition, IsDeleted);
+            var lamda = Expression.Lambda<Func<T, bool>>(body, condition.Parameters[0]);
+
+            var query = await Collection.FindAsync<T>(lamda);
             return await query.FirstOrDefaultAsync();
         }
 
@@ -34,7 +40,11 @@ namespace TK.MongoDB.Data
             Collection = Context.Database.GetCollection<T>(collectionId);
 
             if (condition == null) condition = _ => true;
-            var query = Collection.Find<T>(condition);
+            var body = Expression.AndAlso(condition, IsDeleted);
+            var lamda = Expression.Lambda<Func<T, bool>>(body, condition.Parameters[0]);
+            
+            var query = Collection.Find<T>(lamda);
+
             long totalCount = await query.CountDocumentsAsync();
             List<T> records = await query.SortByDescending(x => x.CreationDate).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
@@ -109,7 +119,11 @@ namespace TK.MongoDB.Data
             Collection = Context.Database.GetCollection<T>(collectionId);
 
             if (condition == null) condition = _ => true;
-            return await Collection.CountDocumentsAsync(condition);
+            if (condition == null) condition = _ => true;
+            var body = Expression.AndAlso(condition, IsDeleted);
+            var lamda = Expression.Lambda<Func<T, bool>>(body, condition.Parameters[0]);
+
+            return await Collection.CountDocumentsAsync(lamda);
         }
 
         public async Task<bool> ExistsAsync(string collectionId, Expression<Func<T, bool>> condition)
