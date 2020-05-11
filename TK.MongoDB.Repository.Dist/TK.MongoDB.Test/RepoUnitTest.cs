@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TK.MongoDB.Data;
 using TK.MongoDB.Test.Models;
 
 namespace TK.MongoDB.Test
@@ -12,17 +13,19 @@ namespace TK.MongoDB.Test
     public class RepoUnitTest
     {
         Repository<Message> MessageRepository;
+        MasterRepository MasterRepository;
         public RepoUnitTest()
         {
             Settings.Configure("MongoDocConnection");
             //Settings.Configure<Activity>(2592000);
             MessageRepository = new Repository<Message>();
+            MasterRepository = new MasterRepository();
         }
 
         [TestMethod]
         public void MasterFind()
         {
-            var result = MessageRepository.MasterGet();
+            var result = MasterRepository.Get().Result;
             Console.WriteLine($"Output:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
         }
 

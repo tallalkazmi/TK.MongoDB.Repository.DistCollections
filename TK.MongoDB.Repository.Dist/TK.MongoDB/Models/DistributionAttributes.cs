@@ -2,7 +2,7 @@
 
 namespace TK.MongoDB.Models
 {
-    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class DistributeAttribute : Attribute
     {
         /// <summary>

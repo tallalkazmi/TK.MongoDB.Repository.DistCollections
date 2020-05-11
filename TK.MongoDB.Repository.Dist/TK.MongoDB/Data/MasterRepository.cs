@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TK.MongoDB.Classes;
 
@@ -19,19 +19,17 @@ namespace TK.MongoDB.Data
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
         }
 
-        public async Task<string> Get()
+        public async Task<IEnumerable<object>> Get()
         {
             var records = await Collection.Find(new BsonDocument())
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
                 .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
                 .ToListAsync();
 
-            var writterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Shell };
-            var result = records.ToJson();
-            return result;
+            return Utility.Convert<object>(records);
         }
 
-        public async Task<string> Get(IDictionary<string, object> keyValuePairs)
+        public async Task<IEnumerable<object>> Get(IDictionary<string, object> keyValuePairs)
         {
             var searchDocument = Utility.CreateSearchBsonDocument(keyValuePairs);
             var records = await Collection.Find(searchDocument)
@@ -39,9 +37,17 @@ namespace TK.MongoDB.Data
                 .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
                 .ToListAsync();
 
-            var writterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Shell };
-            var result = records.ToJson();
-            return result;
+            return Utility.Convert<object>(records);
+        }
+
+        public async Task<IEnumerable<object>> Get(Expression<Func<BsonDocument, bool>> filter)
+        {
+            var records = await Collection.Find(filter)
+                .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
+                .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+                .ToListAsync();
+
+            return Utility.Convert<object>(records);
         }
 
         public async Task<bool> Update(string collectionId, string name)
