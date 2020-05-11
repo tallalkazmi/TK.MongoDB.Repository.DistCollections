@@ -97,9 +97,10 @@
     <Compile Include="Classes\MongoDBContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IRepository.cs" />
-    <Compile Include="Repository\MasterRepository.cs" />
-    <Compile Include="Repository\Repository.cs" />
+    <Compile Include="Data\IMasterRepository.cs" />
+    <Compile Include="Data\IRepository.cs" />
+    <Compile Include="Data\MasterRepository.cs" />
+    <Compile Include="Data\Repository.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Classes\Utility.cs" />
   </ItemGroup>

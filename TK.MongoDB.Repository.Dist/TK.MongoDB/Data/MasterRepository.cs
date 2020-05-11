@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TK.MongoDB.Classes;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Data
 {
-    public class MasterRepository : Settings
+    public class MasterRepository : Settings, IMasterRepository
     {
         protected MongoDBContext Context { get; private set; }
         protected IMongoCollection<BsonDocument> Collection { get; private set; }
@@ -49,6 +49,12 @@ namespace TK.MongoDB
             var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
             UpdateResult updateResult = await Collection.UpdateOneAsync(filter, Builders<BsonDocument>.Update.Set("Name", name).Set("UpdationDate", DateTime.UtcNow));
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+
+        public void Dispose()
+        {
+            if (Context != null)
+                Context.Dispose();
         }
     }
 }

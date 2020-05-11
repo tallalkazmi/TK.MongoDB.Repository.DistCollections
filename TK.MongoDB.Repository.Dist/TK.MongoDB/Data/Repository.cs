@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TK.MongoDB.Classes;
 using TK.MongoDB.Models;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Data
 {
     public class Repository<T> : Settings, IRepository<T> where T : BaseEntity<ObjectId>
     {

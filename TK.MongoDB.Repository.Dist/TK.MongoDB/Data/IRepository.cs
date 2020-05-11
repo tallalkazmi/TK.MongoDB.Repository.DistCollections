@@ -5,15 +5,10 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TK.MongoDB.Models;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Data
 {
     public interface IRepository<T> : IDisposable where T : BaseEntity<ObjectId>
     {
-        /// <summary>
-        /// Initializes collection by dropping collection if exists.
-        /// </summary>
-        //void InitCollection();
-
         /// <summary>
         /// Find single document by condition specified.
         /// </summary>
@@ -40,6 +35,7 @@ namespace TK.MongoDB
         /// <summary>
         /// Inserts single record.
         /// </summary>
+        /// <param name="collectionId">Collection Id to insert data into</param>
         /// <param name="instance">Document</param>
         /// <returns>Document</returns>
         Task<T> InsertAsync(string collectionId, T instance);
