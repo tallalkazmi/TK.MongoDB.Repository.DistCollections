@@ -2,7 +2,7 @@
 using System;
 using System.Configuration;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Classes
 {
     public class MongoDBContext : IDisposable
     {

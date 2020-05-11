@@ -7,14 +7,14 @@ using System.Linq;
 using System.Reflection;
 using TK.MongoDB.Models;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Classes
 {
-    public class MasterContext : Settings
+    public class Master : Settings
     {
-        private MongoDBContext Context { get; set; }
-        private IMongoCollection<BsonDocument> Collection { get; set; }
+        private readonly MongoDBContext Context;
+        private readonly IMongoCollection<BsonDocument> Collection;
 
-        public MasterContext()
+        public Master()
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
@@ -62,6 +62,15 @@ namespace TK.MongoDB
 
                 bsonDoc = bsonDoc.AddRange(AddValues);
                 Collection.InsertOne(bsonDoc);
+
+                //Create indexes
+                var indexBuilder = Builders<BsonDocument>.IndexKeys;
+                List<CreateIndexModel<BsonDocument>> indexes = new List<CreateIndexModel<BsonDocument>>
+                {
+                    new CreateIndexModel<BsonDocument>(indexBuilder.Ascending("CollectionId"), new CreateIndexOptions { Name = "CollectionIdIndex", Unique = true }),
+                    new CreateIndexModel<BsonDocument>(indexBuilder.Descending("CreationDate"), new CreateIndexOptions { Name = "CreationDateIndex" })
+                };
+                Collection.Indexes.CreateMany(indexes);
 
                 //Create Collection
                 Context.Database.CreateCollection(GeneratedCollectionId);

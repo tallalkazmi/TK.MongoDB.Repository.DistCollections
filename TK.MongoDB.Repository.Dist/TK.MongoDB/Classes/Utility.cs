@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using System.Collections.Generic;
 
-namespace TK.MongoDB
+namespace TK.MongoDB.Classes
 {
     public static class Utility
     {
