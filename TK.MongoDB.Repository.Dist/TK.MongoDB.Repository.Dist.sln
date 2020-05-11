@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK.MongoDB", "TK.MongoDB\TK.MongoDB.csproj", "{1E14CB92-3460-482D-BECB-C70AD3307739}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TK.MongoDB.Test", "TK.MongoDB.Test\TK.MongoDB.Test.csproj", "{30A054B6-EFDC-4561-A742-495A73EBBF7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E14CB92-3460-482D-BECB-C70AD3307739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E14CB92-3460-482D-BECB-C70AD3307739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E14CB92-3460-482D-BECB-C70AD3307739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E14CB92-3460-482D-BECB-C70AD3307739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30A054B6-EFDC-4561-A742-495A73EBBF7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30A054B6-EFDC-4561-A742-495A73EBBF7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30A054B6-EFDC-4561-A742-495A73EBBF7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30A054B6-EFDC-4561-A742-495A73EBBF7D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B183B49-0A77-49C4-9F74-038490729B44}
+	EndGlobalSection
+EndGlobal
