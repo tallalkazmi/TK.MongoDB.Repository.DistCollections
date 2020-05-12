@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>TK.MongoDB.Repository.DistrubutedCollections</id>
+    <version>$version$</version>
+    <title>TK.MongoDB.Repository.DistrubutedCollections</title>
+    <authors>Tallal Kazmi</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.DistCollections</projectUrl>
+    <description>$description$</description>
+    <releaseNotes>New features and bug fixes</releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>mongodb repository distributed collections</tags>
+  </metadata>
+</package>
