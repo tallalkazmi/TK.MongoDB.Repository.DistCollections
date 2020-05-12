@@ -41,10 +41,9 @@ namespace TK.MongoDB.Test
         {
             Message message = new Message()
             {
-                Text = "xyz",
+                Text = "xyz-2",
                 Client = 2,
-                Caterer = 2,
-                Order = 1
+                Caterer = 2
             };
 
             Message result = await MessageRepository.InsertAsync(message);

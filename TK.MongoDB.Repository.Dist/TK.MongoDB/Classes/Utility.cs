@@ -9,13 +9,13 @@ namespace TK.MongoDB.Classes
 {
     public static class Utility
     {
-        public static BsonDocument CreateSearchBsonDocument(IDictionary<string, object> keyValues)
+        public static BsonDocument CreateSearchBsonDocument(IDictionary<string, object> keyValues, bool disregardNullValues = false)
         {
             var searchCriteria = new BsonArray();
 
             foreach (var item in keyValues)
             {
-                if (item.Value == null) continue;
+                if (disregardNullValues == true && item.Value == null) continue;
                 searchCriteria.Add(new BsonDocument(item.Key, BsonValue.Create(item.Value)));
             }
 

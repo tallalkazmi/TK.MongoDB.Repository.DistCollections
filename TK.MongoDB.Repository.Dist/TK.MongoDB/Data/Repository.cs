@@ -50,6 +50,8 @@ namespace TK.MongoDB.Data
             instance.CreationDate = DateTime.UtcNow;
             instance.UpdationDate = null;
             await Collection.InsertOneAsync(instance);
+
+            Master.UpdateDateTime(CollectionName);
             return instance;
         }
 
@@ -61,6 +63,8 @@ namespace TK.MongoDB.Data
             instance.CreationDate = DateTime.UtcNow;
             instance.UpdationDate = null;
             await Collection.InsertOneAsync(instance);
+
+            Master.UpdateDateTime(collectionId);
             return instance;
         }
 
@@ -78,7 +82,9 @@ namespace TK.MongoDB.Data
             }
 
             ReplaceOneResult result = await Collection.ReplaceOneAsync<T>(x => x.Id == instance.Id, instance);
-            return result.ModifiedCount != 0;
+            bool ret = result.ModifiedCount != 0;
+            if (ret) Master.UpdateDateTime(collectionId);
+            return ret;
         }
 
         public async Task<bool> DeleteAsync(string collectionId, ObjectId id, bool logical = true)
@@ -90,19 +96,23 @@ namespace TK.MongoDB.Data
             if (_instance == null)
                 throw new KeyNotFoundException($"Object with Id: '{id}' was not found.");
 
+            bool ret;
             if (logical)
             {
                 UpdateDefinition<T> update = Builders<T>.Update
                     .Set(x => x.Deleted, true)
                     .Set(x => x.UpdationDate, DateTime.UtcNow);
                 UpdateResult result = await Collection.UpdateOneAsync(x => x.Id == id, update);
-                return result.ModifiedCount != 0;
+                ret = result.ModifiedCount != 0;
             }
             else
             {
                 DeleteResult result = await Collection.DeleteOneAsync(x => x.Id == id);
-                return result.DeletedCount != 0;
+                ret = result.DeletedCount != 0;
             }
+
+            if (ret) Master.UpdateDateTime(collectionId);
+            return ret;
         }
 
         public async Task<long> CountAsync(string collectionId, Expression<Func<T, bool>> condition = null)

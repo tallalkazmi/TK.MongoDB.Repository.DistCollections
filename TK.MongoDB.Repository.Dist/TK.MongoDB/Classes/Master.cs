@@ -116,7 +116,7 @@ namespace TK.MongoDB.Classes
                     var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r);
                     if (MaxKeyValue.Value != 0) KeyValues.Remove(MaxKeyValue.Key);
 
-                    BsonDocument newSearchDocument = Utility.CreateSearchBsonDocument(KeyValues);
+                    BsonDocument newSearchDocument = Utility.CreateSearchBsonDocument(KeyValues, true);
                     var query2 = Collection.Find(newSearchDocument);
 
                     //Return the base's CollectionId
@@ -127,6 +127,7 @@ namespace TK.MongoDB.Classes
                 {
                     //Get CollectionId
                     result = query.FirstOrDefault().GetValue("CollectionId").AsString;
+                    UpdateDateTime(KeyValues, Distribution);
                 }
             }
 
@@ -143,6 +144,40 @@ namespace TK.MongoDB.Classes
             var indexBuilder = Builders<T>.IndexKeys;
             var indexModel = new CreateIndexModel<T>(indexBuilder.Descending(x => x.CreationDate), new CreateIndexOptions { ExpireAfter = timeSpan, Name = "CreationDateIndex" });
             Collection.Indexes.CreateOne(indexModel);
+        }
+
+        public bool UpdateDateTime(string collectionId)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
+            UpdateResult updateResult = Collection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+
+        private bool UpdateDateTime(Dictionary<string, object> keyValues, Dictionary<string, int> distribution)
+        {
+            Dictionary<string, object> keyValuesCopy = new Dictionary<string, object>(keyValues);
+
+            //Get Max level key for identifiying correct collection to update time.
+            var validKeys = keyValuesCopy.Where(x => x.Value != null).Select(x => x.Key).ToList();
+            var toAggrDist = distribution.Where(v => validKeys.Contains(v.Key)).ToDictionary(x => x.Key, x => x.Value);
+            var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r);
+
+            //Return if no max value found
+            if (MaxKeyValue.Value == 0) return false;
+
+            //Find base's CollectionId
+            keyValuesCopy.Remove(MaxKeyValue.Key);
+            BsonDocument searchDocument = Utility.CreateSearchBsonDocument(keyValuesCopy);
+            var query = Collection.Find(searchDocument); 
+            string CollectionId = query.FirstOrDefault().GetValue("CollectionId").AsString;
+
+            //Load base's CollectionId
+            var tempCollection = Context.Database.GetCollection<BsonDocument>(CollectionId);
+            BsonDocument searchDocument2 = Utility.CreateSearchBsonDocument(keyValues);
+
+            //Update DateTime
+            UpdateResult updateResult = tempCollection.UpdateOne(searchDocument2, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
     }
 }
