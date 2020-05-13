@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace TK.MongoDB.Distributed.Classes
 {
-    public static class Utility
+    internal static class Utility
     {
         public static BsonDocument CreateSearchBsonDocument(IDictionary<string, object> keyValues, bool disregardNullValues = false)
         {

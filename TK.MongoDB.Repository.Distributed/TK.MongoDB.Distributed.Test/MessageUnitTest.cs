@@ -4,21 +4,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TK.MongoDB.Distributed.Data;
 using TK.MongoDB.Distributed.Test.Models;
 
 namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
-    public class MessageUnitTest
+    public class MessageUnitTest:BaseTest
     {
-        readonly Repository<Message> MessageRepository;
         readonly string CollectionId;
 
         public MessageUnitTest()
         {
-            Settings.Configure("MongoDocConnection");
-            MessageRepository = new Repository<Message>();
+            Settings.ConnectionStringSettingName = "MongoDocConnection";
             CollectionId = "5f9a6a926bf844cd8b50a88824333dfd";
         }
 
@@ -41,7 +38,7 @@ namespace TK.MongoDB.Distributed.Test
         {
             Message message = new Message()
             {
-                Text = "xyz-2",
+                Text = $"Test message # {DateTime.UtcNow.ToShortTimeString()}",
                 Client = 2,
                 Caterer = 2
             };

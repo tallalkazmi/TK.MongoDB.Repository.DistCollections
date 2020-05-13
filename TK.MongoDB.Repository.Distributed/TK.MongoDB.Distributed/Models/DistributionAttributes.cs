@@ -2,6 +2,9 @@
 
 namespace TK.MongoDB.Distributed.Models
 {
+    /// <summary>
+    /// Use this attribute on properties to be distributed over multiple collections
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class DistributeAttribute : Attribute
     {

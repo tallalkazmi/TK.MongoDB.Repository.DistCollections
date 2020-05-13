@@ -9,11 +9,12 @@ using TK.MongoDB.Distributed.Models;
 
 namespace TK.MongoDB.Distributed.Data
 {
-    public class Repository<T> : Settings, IRepository<T> where T : BaseEntity<ObjectId>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+    public class Repository<T> : Settings, IRepository<T> where T : BaseEntity
     {
         private readonly Master Master;
+        private readonly MongoDBContext Context;
 
-        protected MongoDBContext Context { get; private set; }
         protected IMongoCollection<T> Collection { get; private set; }
 
         public Repository()
@@ -137,4 +138,5 @@ namespace TK.MongoDB.Distributed.Data
                 Context.Dispose();
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

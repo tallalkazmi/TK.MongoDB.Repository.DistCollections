@@ -3,20 +3,16 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TK.MongoDB.Distributed.Data;
 using TK.MongoDB.Distributed.Test.Models;
 
 namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
-    public class CompanyMessageUnitTest
+    public class CompanyMessageUnitTest : BaseTest
     {
-        readonly Repository<CompanyMessage> CompanyMessageRepository;
-
         public CompanyMessageUnitTest()
         {
-            Settings.Configure("MongoDocConnection");
-            CompanyMessageRepository = new Repository<CompanyMessage>();
+            Settings.ConnectionStringSettingName = "MongoDocConnection";
         }
 
         [TestMethod]
@@ -24,12 +20,15 @@ namespace TK.MongoDB.Distributed.Test
         {
             CompanyMessage message = new CompanyMessage()
             {
-                Text = "xyz",
+                Text = $"Test message # {DateTime.UtcNow.ToShortTimeString()}",
                 Company = 1
             };
 
-            CompanyMessage result = await CompanyMessageRepository.InsertAsync(message);
+            var result = await CompanyMessageRepository.InsertAsync(message);
             Console.WriteLine($"Inserted:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
+            
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(CompanyMessage));
         }
     }
 }

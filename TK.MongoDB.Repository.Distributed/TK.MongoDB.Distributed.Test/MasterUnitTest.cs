@@ -4,19 +4,15 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TK.MongoDB.Distributed.Data;
 
 namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
-    public class MasterUnitTest
+    public class MasterUnitTest:BaseTest
     {
-        readonly MasterRepository MasterRepository;
-
         public MasterUnitTest()
         {
-            Settings.Configure("MongoDocConnection");
-            MasterRepository = new MasterRepository();
+            Settings.ConnectionStringSettingName = "MongoDocConnection";
         }
 
         [TestMethod]

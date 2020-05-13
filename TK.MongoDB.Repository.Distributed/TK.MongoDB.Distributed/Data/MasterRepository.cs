@@ -7,12 +7,14 @@ using TK.MongoDB.Distributed.Classes;
 
 namespace TK.MongoDB.Distributed.Data
 {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class MasterRepository : Settings, IMasterRepository
     {
-        protected MongoDBContext Context { get; private set; }
-        protected IMongoCollection<BsonDocument> Collection { get; private set; }
+        private readonly MongoDBContext Context;
+        private readonly IMongoCollection<BsonDocument> Collection;
 
         public MasterRepository()
+
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
@@ -62,4 +64,5 @@ namespace TK.MongoDB.Distributed.Data
                 Context.Dispose();
         }
     }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

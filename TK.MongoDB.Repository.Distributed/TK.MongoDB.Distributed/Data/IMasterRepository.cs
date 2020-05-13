@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace TK.MongoDB.Distributed.Data
 {
+    /// <summary>
+    /// Master data repository
+    /// </summary>
     public interface IMasterRepository : IDisposable
     {
         /// <summary>

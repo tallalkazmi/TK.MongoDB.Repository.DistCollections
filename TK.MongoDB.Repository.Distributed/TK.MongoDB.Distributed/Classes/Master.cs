@@ -9,7 +9,7 @@ using TK.MongoDB.Distributed.Models;
 
 namespace TK.MongoDB.Distributed.Classes
 {
-    public class Master : Settings
+    internal class Master : Settings
     {
         private readonly MongoDBContext Context;
         private readonly IMongoCollection<BsonDocument> Collection;
@@ -20,7 +20,7 @@ namespace TK.MongoDB.Distributed.Classes
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
         }
 
-        public string RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity<ObjectId>
+        public string RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity
         {
             // Resulted Collection Name
             string result = null;
@@ -135,7 +135,7 @@ namespace TK.MongoDB.Distributed.Classes
             return result;
         }
 
-        private void SetCollectionIndexes<T>(string collectionName) where T : BaseEntity<ObjectId>
+        private void SetCollectionIndexes<T>(string collectionName) where T : BaseEntity
         {
             IMongoCollection<T> Collection = Context.Database.GetCollection<T>(collectionName);
             TimeSpan timeSpan = new TimeSpan(TimeSpan.TicksPerSecond * ExpireAfterSeconds);
