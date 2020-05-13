@@ -8,9 +8,9 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.DistCollections</projectUrl>
+    <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
-    <releaseNotes>New features and bug fixes</releaseNotes>
+    <releaseNotes>Solution renamed</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
   </metadata>
