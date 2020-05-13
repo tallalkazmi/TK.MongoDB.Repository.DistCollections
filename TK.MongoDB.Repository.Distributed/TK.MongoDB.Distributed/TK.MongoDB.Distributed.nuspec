@@ -10,7 +10,7 @@
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
-    <releaseNotes>Bug and warning fixes</releaseNotes>
+    <releaseNotes>Performance improvements</releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
   </metadata>

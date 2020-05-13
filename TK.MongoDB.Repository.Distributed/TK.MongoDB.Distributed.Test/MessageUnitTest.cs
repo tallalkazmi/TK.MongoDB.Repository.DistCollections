@@ -16,7 +16,7 @@ namespace TK.MongoDB.Distributed.Test
         public MessageUnitTest()
         {
             Settings.ConnectionStringSettingName = "MongoDocConnection";
-            CollectionId = "5f9a6a926bf844cd8b50a88824333dfd";
+            CollectionId = "2b9f7ce62870424e84cfeedcaf2670fe";
         }
 
         [TestMethod]
@@ -45,6 +45,9 @@ namespace TK.MongoDB.Distributed.Test
 
             Message result = await MessageRepository.InsertAsync(message);
             Console.WriteLine($"Inserted:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
+
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(Message));
         }
 
         [TestMethod]
@@ -52,7 +55,7 @@ namespace TK.MongoDB.Distributed.Test
         {
             Message message = new Message()
             {
-                Id = new ObjectId("5eb9a6f598d2c102f861708c"),
+                Id = new ObjectId("5ebc525898d2c15c8839b4f5"),
                 Text = "Changed"
             };
 
@@ -63,7 +66,7 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Delete()
         {
-            bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5eb9a6f598d2c102f861708c"));
+            bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5ebc525898d2c15c8839b4f5"));
             Console.WriteLine($"Deleted: {result}");
         }
 

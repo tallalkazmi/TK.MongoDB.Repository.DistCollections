@@ -23,7 +23,7 @@ namespace TK.MongoDB.Distributed.Classes
         public string RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity
         {
             // Resulted Collection Name
-            string result = null;
+            string RetrivedCollectionId = null;
 
             //Get Distributed Columns
             Dictionary<string, object> KeyValues = new Dictionary<string, object>();
@@ -56,6 +56,7 @@ namespace TK.MongoDB.Distributed.Classes
                 {
                     { "Name", "Untitled" },
                     { "CollectionId", GeneratedCollectionId },
+                    { "ParentCollectionId", null },
                     { "CreationDate", DateTime.UtcNow},
                     { "UpdationDate", null}
                 };
@@ -75,18 +76,20 @@ namespace TK.MongoDB.Distributed.Classes
                 //Create Collection
                 Context.Database.CreateCollection(GeneratedCollectionId);
                 SetCollectionIndexes<T>(GeneratedCollectionId);
-                result = GeneratedCollectionId;
+                RetrivedCollectionId = GeneratedCollectionId;
             }
             else
             {
                 //Create BsonDocument for search
-                BsonDocument searchDocument = Utility.CreateSearchBsonDocument(KeyValues);
-                var query = Collection.Find(searchDocument);
+                BsonDocument searchDocumentByKV = Utility.CreateSearchBsonDocument(KeyValues);
+                var query = Collection.Find(searchDocumentByKV);
 
                 //If BsonDocument doesn't exists, create one.
                 long count = query.CountDocuments();
                 if (count == 0)
                 {
+                    string parentCollectionId = GetRootCollectionId(KeyValues, Distribution);
+
                     //Generate CollectionId for Collection Name.
                     string GeneratedCollectionId = Guid.NewGuid().ToString("N");
 
@@ -99,6 +102,7 @@ namespace TK.MongoDB.Distributed.Classes
                     {
                         { "Name", "Untitled" },
                         { "CollectionId", GeneratedCollectionId },
+                        { "ParentCollectionId", string.IsNullOrWhiteSpace(parentCollectionId) ? null : parentCollectionId },
                         { "CreationDate", DateTime.UtcNow},
                         { "UpdationDate", null}
                     };
@@ -110,29 +114,40 @@ namespace TK.MongoDB.Distributed.Classes
                     Context.Database.CreateCollection(GeneratedCollectionId);
                     SetCollectionIndexes<T>(GeneratedCollectionId);
 
-                    //Get Max level key for identifiying correct collection to insert message into.
-                    var validKeys = KeyValues.Where(x => x.Value != null).Select(x => x.Key).ToList();
-                    var toAggrDist = Distribution.Where(v => validKeys.Contains(v.Key)).ToDictionary(x => x.Key, x => x.Value);
-                    var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r);
-                    if (MaxKeyValue.Value != 0) KeyValues.Remove(MaxKeyValue.Key);
-
-                    BsonDocument newSearchDocument = Utility.CreateSearchBsonDocument(KeyValues, true);
-                    var query2 = Collection.Find(newSearchDocument);
-
-                    //Return the base's CollectionId
-                    result = query2.FirstOrDefault().GetValue("CollectionId").AsString;
+                    //Return GeneratedCollectionId if ParentCollectionId is null
+                    RetrivedCollectionId = string.IsNullOrWhiteSpace(parentCollectionId) ? GeneratedCollectionId : parentCollectionId;
                 }
-                else if (count > 1) throw new Exception("More than one collections found for the criterion");
+                else if (count > 1) throw new SystemException("More than one collections found for the criterion");
                 else
                 {
                     //Get CollectionId
-                    result = query.FirstOrDefault().GetValue("CollectionId").AsString;
-                    UpdateDateTime(KeyValues, Distribution);
+                    RetrivedCollectionId = query.FirstOrDefault().GetValue("CollectionId").AsString;
+
+                    string parentCollectionId = GetRootCollectionId(KeyValues, Distribution);
+                    if (RetrivedCollectionId != parentCollectionId) SetParentUpdateDateTime(KeyValues, parentCollectionId);
                 }
             }
 
-            if (result == null) throw new ArgumentException("Collection with the criterion does not exists");
-            return result;
+            if (RetrivedCollectionId == null) throw new SystemException("Collection with the criterion does not exists");
+            return RetrivedCollectionId;
+        }
+
+        public bool SetUpdateDateTime(string collectionId)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
+            UpdateResult updateResult = Collection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+
+        private bool SetParentUpdateDateTime(Dictionary<string, object> keyValues, string parentCollectionId)
+        {
+            //Load base's CollectionId
+            var tempCollection = Context.Database.GetCollection<BsonDocument>(parentCollectionId);
+            BsonDocument searchDocumentByKV = Utility.CreateSearchBsonDocument(keyValues);
+
+            //Update DateTime
+            UpdateResult updateResult = tempCollection.UpdateOne(searchDocumentByKV, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
 
         private void SetCollectionIndexes<T>(string collectionName) where T : BaseEntity
@@ -146,38 +161,22 @@ namespace TK.MongoDB.Distributed.Classes
             Collection.Indexes.CreateOne(indexModel);
         }
 
-        public bool UpdateDateTime(string collectionId)
+        private string GetRootCollectionId(Dictionary<string, object> keyValues, Dictionary<string, int> distribution)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
-            UpdateResult updateResult = Collection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
-        }
-
-        private bool UpdateDateTime(Dictionary<string, object> keyValues, Dictionary<string, int> distribution)
-        {
+            //Deep copy
             Dictionary<string, object> keyValuesCopy = new Dictionary<string, object>(keyValues);
 
-            //Get Max level key for identifiying correct collection to update time.
+            //Get Max level key for identifiying correct collection to insert message into.
             var validKeys = keyValuesCopy.Where(x => x.Value != null).Select(x => x.Key).ToList();
             var toAggrDist = distribution.Where(v => validKeys.Contains(v.Key)).ToDictionary(x => x.Key, x => x.Value);
             var MaxKeyValue = toAggrDist.Aggregate((l, r) => l.Value > r.Value ? l : r);
+            if (MaxKeyValue.Value != 0) keyValuesCopy.Remove(MaxKeyValue.Key);
 
-            //Return if no max value found
-            if (MaxKeyValue.Value == 0) return false;
+            BsonDocument searchDocumentByKV = Utility.CreateSearchBsonDocument(keyValuesCopy, ignoreNullValues: true);
+            var query = Collection.Find(searchDocumentByKV);
 
-            //Find base's CollectionId
-            keyValuesCopy.Remove(MaxKeyValue.Key);
-            BsonDocument searchDocument = Utility.CreateSearchBsonDocument(keyValuesCopy);
-            var query = Collection.Find(searchDocument); 
-            string CollectionId = query.FirstOrDefault().GetValue("CollectionId").AsString;
-
-            //Load base's CollectionId
-            var tempCollection = Context.Database.GetCollection<BsonDocument>(CollectionId);
-            BsonDocument searchDocument2 = Utility.CreateSearchBsonDocument(keyValues);
-
-            //Update DateTime
-            UpdateResult updateResult = tempCollection.UpdateOne(searchDocument2, Builders<BsonDocument>.Update.Set("UpdationDate", DateTime.UtcNow));
-            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+            //Return the base's CollectionId
+            return query.FirstOrDefault()?.GetValue("CollectionId").AsString;
         }
     }
 }

@@ -52,7 +52,7 @@ namespace TK.MongoDB.Distributed.Data
             instance.UpdationDate = null;
             await Collection.InsertOneAsync(instance);
 
-            Master.UpdateDateTime(CollectionName);
+            Master.SetUpdateDateTime(CollectionName);
             return instance;
         }
 
@@ -65,7 +65,7 @@ namespace TK.MongoDB.Distributed.Data
             instance.UpdationDate = null;
             await Collection.InsertOneAsync(instance);
 
-            Master.UpdateDateTime(collectionId);
+            Master.SetUpdateDateTime(collectionId);
             return instance;
         }
 
@@ -84,7 +84,7 @@ namespace TK.MongoDB.Distributed.Data
 
             ReplaceOneResult result = await Collection.ReplaceOneAsync<T>(x => x.Id == instance.Id, instance);
             bool ret = result.ModifiedCount != 0;
-            if (ret) Master.UpdateDateTime(collectionId);
+            if (ret) Master.SetUpdateDateTime(collectionId);
             return ret;
         }
 
@@ -112,7 +112,7 @@ namespace TK.MongoDB.Distributed.Data
                 ret = result.DeletedCount != 0;
             }
 
-            if (ret) Master.UpdateDateTime(collectionId);
+            if (ret) Master.SetUpdateDateTime(collectionId);
             return ret;
         }
 

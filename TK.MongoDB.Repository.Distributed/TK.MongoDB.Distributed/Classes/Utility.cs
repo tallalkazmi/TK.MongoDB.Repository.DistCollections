@@ -9,17 +9,33 @@ namespace TK.MongoDB.Distributed.Classes
 {
     internal static class Utility
     {
-        public static BsonDocument CreateSearchBsonDocument(IDictionary<string, object> keyValues, bool disregardNullValues = false)
+        public static BsonDocument CreateSearchBsonDocument(IDictionary<string, object> keyValues, Operand operand = Operand.And, bool ignoreNullValues = false)
         {
             var searchCriteria = new BsonArray();
 
             foreach (var item in keyValues)
             {
-                if (disregardNullValues == true && item.Value == null) continue;
+                if (ignoreNullValues == true && item.Value == null) continue;
                 searchCriteria.Add(new BsonDocument(item.Key, BsonValue.Create(item.Value)));
             }
 
-            var filterDocument = new BsonDocument { { "$and", searchCriteria } };
+            string _operand;
+            switch (operand)
+            {
+                case Operand.And:
+                    _operand = "$and";
+                    break;
+
+                case Operand.Or:
+                    _operand = "$or";
+                    break;
+
+                default:
+                    _operand = "$and";
+                    break;
+            }
+
+            var filterDocument = new BsonDocument { { _operand, searchCriteria } };
             return filterDocument;
         }
 
@@ -48,5 +64,11 @@ namespace TK.MongoDB.Distributed.Classes
             return Expression.Lambda<Func<T, bool>>(
                 Expression.AndAlso(expr1.Body, Expression.Invoke(expr2, param)), param);
         }
+    }
+
+    internal enum Operand
+    {
+        And,
+        Or
     }
 }
