@@ -1,4 +1,4 @@
-# TK.MongoDB.Repository.DistCollections
+# TK.MongoDB.Repository.Distributed
 Repository pattern implementation with ***distributed collections*** of MongoDB in .NET Framework
 
 ## Intro
