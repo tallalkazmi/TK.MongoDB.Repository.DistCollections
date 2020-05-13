@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TK.MongoDB.Models
+namespace TK.MongoDB.Distributed.Models
 {
     public abstract class BaseEntity<T>
     {

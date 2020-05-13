@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TK.MongoDB.Data
+namespace TK.MongoDB.Distributed.Data
 {
     public interface IMasterRepository : IDisposable
     {

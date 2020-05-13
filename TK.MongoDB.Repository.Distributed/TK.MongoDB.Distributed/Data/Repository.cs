@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using TK.MongoDB.Classes;
-using TK.MongoDB.Models;
+using TK.MongoDB.Distributed.Classes;
+using TK.MongoDB.Distributed.Models;
 
-namespace TK.MongoDB.Data
+namespace TK.MongoDB.Distributed.Data
 {
     public class Repository<T> : Settings, IRepository<T> where T : BaseEntity<ObjectId>
     {

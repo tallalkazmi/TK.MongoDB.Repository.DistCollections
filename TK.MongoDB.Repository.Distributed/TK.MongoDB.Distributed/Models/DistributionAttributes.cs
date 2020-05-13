@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TK.MongoDB.Models
+namespace TK.MongoDB.Distributed.Models
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
     public class DistributeAttribute : Attribute

@@ -3,9 +3,9 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TK.MongoDB.Classes;
+using TK.MongoDB.Distributed.Classes;
 
-namespace TK.MongoDB.Data
+namespace TK.MongoDB.Distributed.Data
 {
     public class MasterRepository : Settings, IMasterRepository
     {

@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TK.MongoDB.Models;
+using TK.MongoDB.Distributed.Models;
 
-namespace TK.MongoDB.Classes
+namespace TK.MongoDB.Distributed.Classes
 {
     public class Master : Settings
     {

@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using TK.MongoDB.Data;
+using TK.MongoDB.Distributed.Data;
 
-namespace TK.MongoDB.Test
+namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
     public class MasterUnitTest

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
-namespace TK.MongoDB.Classes
+namespace TK.MongoDB.Distributed.Classes
 {
     public static class Utility
     {

@@ -1,4 +1,4 @@
-﻿namespace TK.MongoDB
+﻿namespace TK.MongoDB.Distributed
 {
     public class Settings
     {

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using TK.MongoDB.Models;
+using TK.MongoDB.Distributed.Models;
 
-namespace TK.MongoDB.Data
+namespace TK.MongoDB.Distributed.Data
 {
     public interface IRepository<T> : IDisposable where T : BaseEntity<ObjectId>
     {
