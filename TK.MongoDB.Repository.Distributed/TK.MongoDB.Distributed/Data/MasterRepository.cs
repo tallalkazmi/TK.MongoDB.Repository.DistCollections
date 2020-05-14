@@ -8,7 +8,7 @@ using TK.MongoDB.Distributed.Classes;
 namespace TK.MongoDB.Distributed.Data
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-    public class MasterRepository : Settings, IMasterRepository
+    public class MasterRepository : MasterSettings, IMasterRepository
     {
         private readonly MongoDBContext Context;
         private readonly IMongoCollection<BsonDocument> Collection;
@@ -16,7 +16,7 @@ namespace TK.MongoDB.Distributed.Data
         public MasterRepository()
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
-            Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
+            Collection = Context.Database.GetCollection<BsonDocument>(CollectionName);
         }
 
         public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize)
@@ -62,10 +62,10 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
         }
 
-        public async Task<bool> UpdateAsync(string collectionId, string name)
+        public async Task<bool> UpdateAsync(string collectionId, string property, object value)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("CollectionId", collectionId);
-            UpdateResult updateResult = await Collection.UpdateOneAsync(filter, Builders<BsonDocument>.Update.Set("Name", name).Set("UpdationDate", DateTime.UtcNow));
+            UpdateResult updateResult = await Collection.UpdateOneAsync(filter, Builders<BsonDocument>.Update.Set(property, value).Set("UpdationDate", DateTime.UtcNow));
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
 

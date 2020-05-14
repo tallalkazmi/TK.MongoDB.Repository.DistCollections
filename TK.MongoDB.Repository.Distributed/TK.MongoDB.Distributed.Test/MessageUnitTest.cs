@@ -1,21 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TK.MongoDB.Distributed.Test.Models;
+using static TK.MongoDB.Distributed.MasterSettings;
 
 namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
-    public class MessageUnitTest:BaseTest
+    public class MessageUnitTest : BaseTest
     {
         readonly string CollectionId;
 
         public MessageUnitTest()
         {
             Settings.ConnectionStringSettingName = "MongoDocConnection";
+            MasterSettings.AdditionalProperties = new List<string>() { "CreatedBy" };
+
             CollectionId = "2b9f7ce62870424e84cfeedcaf2670fe";
         }
 
@@ -36,11 +40,13 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Insert()
         {
+            SetProperties(new Dictionary<string, object>() { { "CreatedBy", "123456789123456789123456" } }, Triggers.BeforeInsert);
+            SetProperties(new Dictionary<string, object>() { { "CreatedBy", "999999999999999999999999" } }, Triggers.AfterInsert);
             Message message = new Message()
             {
                 Text = $"Test message # {DateTime.UtcNow.ToShortTimeString()}",
-                Client = 2,
-                Caterer = 2
+                Client = 3,
+                Caterer = 4
             };
 
             Message result = await MessageRepository.InsertAsync(message);

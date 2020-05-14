@@ -41,8 +41,9 @@ namespace TK.MongoDB.Distributed.Data
         /// Updates 'Name' of a document in the collection identified by 'Collection Id'
         /// </summary>
         /// <param name="collectionId">Collection Id to update</param>
-        /// <param name="name">New 'name' value</param>
+        /// <param name="property">Property name to update</param>
+        /// <param name="value">Property value to update</param>
         /// <returns></returns>
-        Task<bool> UpdateAsync(string collectionId, string name);
+        Task<bool> UpdateAsync(string collectionId, string property, object value);
     }
 }

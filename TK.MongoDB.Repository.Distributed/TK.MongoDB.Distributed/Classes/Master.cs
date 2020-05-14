@@ -9,7 +9,7 @@ using TK.MongoDB.Distributed.Models;
 
 namespace TK.MongoDB.Distributed.Classes
 {
-    internal class Master : Settings
+    internal class Master : MasterSettings
     {
         private readonly MongoDBContext Context;
         private readonly IMongoCollection<BsonDocument> Collection;
@@ -17,7 +17,7 @@ namespace TK.MongoDB.Distributed.Classes
         public Master()
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
-            Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
+            Collection = Context.Database.GetCollection<BsonDocument>(CollectionName);
         }
 
         public string RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity
@@ -61,8 +61,12 @@ namespace TK.MongoDB.Distributed.Classes
                     { "UpdationDate", null}
                 };
 
+                AddValues.AddKeys(AdditionalProperties);
                 bsonDoc = bsonDoc.AddRange(AddValues);
+
+                BeforeInsert(bsonDoc);
                 Collection.InsertOne(bsonDoc);
+                AfterInsert(bsonDoc);
 
                 //Create indexes
                 var indexBuilder = Builders<BsonDocument>.IndexKeys;
@@ -107,8 +111,12 @@ namespace TK.MongoDB.Distributed.Classes
                         { "UpdationDate", null}
                     };
 
+                    AddValues.AddKeys(AdditionalProperties);
                     bsonDoc = bsonDoc.AddRange(AddValues);
+
+                    BeforeInsert(bsonDoc);
                     Collection.InsertOne(bsonDoc);
+                    AfterInsert(bsonDoc);
 
                     //Create Collection
                     Context.Database.CreateCollection(GeneratedCollectionId);
@@ -177,6 +185,25 @@ namespace TK.MongoDB.Distributed.Classes
 
             //Return the base's CollectionId
             return query.FirstOrDefault()?.GetValue("CollectionId").AsString;
+        }
+
+        private void BeforeInsert(BsonDocument doc)
+        {
+            foreach (var prop in PropertiesBeforeInsert)
+            {
+                doc.SetElement(new BsonElement(prop.Key, BsonValue.Create(prop.Value)));
+            }
+        }
+
+        private void AfterInsert(BsonDocument doc)
+        {
+            var filterDef = new FilterDefinitionBuilder<BsonDocument>();
+            var updateDef = new UpdateDefinitionBuilder<BsonDocument>();
+
+            foreach (var prop in PropertiesAfterInsert)
+            {
+                Collection.UpdateOne(filterDef.Eq("CollectionId", doc.GetValue("CollectionId")), updateDef.Set(prop.Key, BsonValue.Create(prop.Value)));
+            }
         }
     }
 }

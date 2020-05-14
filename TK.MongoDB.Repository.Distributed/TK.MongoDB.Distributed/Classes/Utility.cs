@@ -64,6 +64,14 @@ namespace TK.MongoDB.Distributed.Classes
             return Expression.Lambda<Func<T, bool>>(
                 Expression.AndAlso(expr1.Body, Expression.Invoke(expr2, param)), param);
         }
+
+        public static void AddKeys<TKey>(this IDictionary<TKey, object> dictionary, IEnumerable<TKey> properties)
+        {
+            foreach (var item in properties)
+            {
+                dictionary.Add(item, null);
+            }
+        }
     }
 
     internal enum Operand

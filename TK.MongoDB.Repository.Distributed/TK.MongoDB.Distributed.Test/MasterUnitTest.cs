@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace TK.MongoDB.Distributed.Test
 {
     [TestClass]
-    public class MasterUnitTest:BaseTest
+    public class MasterUnitTest : BaseTest
     {
         public MasterUnitTest()
         {
@@ -44,7 +44,7 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Update()
         {
-            bool result = await MasterRepository.UpdateAsync("53df73c45d7e493b86746066a693534c", "Untitled-3");
+            bool result = await MasterRepository.UpdateAsync("53df73c45d7e493b86746066a693534c", "Name", "Untitled-3");
             Console.WriteLine($"Updated: {result}");
         }
     }
