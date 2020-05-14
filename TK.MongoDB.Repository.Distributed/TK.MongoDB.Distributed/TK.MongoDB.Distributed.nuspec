@@ -10,7 +10,11 @@
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
-    <releaseNotes>Performance improvements</releaseNotes>
+    <releaseNotes>
+      Pagination added to Master collection listing methods.
+      Included options to add additional properties to Master collection.
+      Included triggers to add/update properties to Master collection.
+    </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
   </metadata>
