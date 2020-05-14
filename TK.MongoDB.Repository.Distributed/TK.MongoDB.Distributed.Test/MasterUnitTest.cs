@@ -18,7 +18,7 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Get()
         {
-            var result = await MasterRepository.GetAsync();
+            var result = await MasterRepository.GetAsync(1, 2);
             Console.WriteLine($"Output:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
         }
 
@@ -30,7 +30,7 @@ namespace TK.MongoDB.Distributed.Test
                 { "Client", 1 }
             };
 
-            var result = await MasterRepository.GetAsync(keyValuePairs);
+            var result = await MasterRepository.GetAsync(1, 2, keyValuePairs);
             Console.WriteLine($"Output:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
         }
 

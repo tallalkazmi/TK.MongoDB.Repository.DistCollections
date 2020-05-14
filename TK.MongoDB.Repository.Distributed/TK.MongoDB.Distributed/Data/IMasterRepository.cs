@@ -14,22 +14,28 @@ namespace TK.MongoDB.Distributed.Data
         /// <summary>
         /// Gets all documents
         /// </summary>
+        /// <param name="currentPage">Page number</param>
+        /// <param name="pageSize">Page size</param>
         /// <returns>Documents</returns>
-        Task<IEnumerable<object>> GetAsync();
+        Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize);
 
         /// <summary>
         /// Gets documents satisfying KeyValuePairs with 'AND' operand
         /// </summary>
+        /// <param name="currentPage">Page number</param>
+        /// <param name="pageSize">Page size</param>
         /// <param name="keyValuePairs">Element name and value to search for</param>
         /// <returns>Documents</returns>
-        Task<IEnumerable<object>> GetAsync(IDictionary<string, object> keyValuePairs);
+        Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs);
 
         /// <summary>
         /// Gets documents satisfying filter condition
         /// </summary>
+        /// <param name="currentPage">Page number</param>
+        /// <param name="pageSize">Page size</param>
         /// <param name="filter">Filter Definition</param>
         /// <returns>Documents</returns>
-        Task<IEnumerable<object>> GetAsync(FilterDefinition<BsonDocument> filter);
+        Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter);
 
         /// <summary>
         /// Updates 'Name' of a document in the collection identified by 'Collection Id'

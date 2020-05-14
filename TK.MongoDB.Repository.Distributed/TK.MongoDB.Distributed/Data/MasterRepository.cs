@@ -14,41 +14,52 @@ namespace TK.MongoDB.Distributed.Data
         private readonly IMongoCollection<BsonDocument> Collection;
 
         public MasterRepository()
-
         {
             Context = new MongoDBContext(ConnectionStringSettingName);
             Collection = Context.Database.GetCollection<BsonDocument>(MasterCollectionName);
         }
 
-        public async Task<IEnumerable<object>> GetAsync()
+        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize)
         {
-            var records = await Collection.Find(new BsonDocument())
+            var query = Collection.Find(new BsonDocument());
+
+            long totalCount = await query.CountDocumentsAsync();
+            var records = await query.Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+                .Skip((currentPage - 1) * pageSize)
+                .Limit(pageSize)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
-                .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
                 .ToListAsync();
 
-            return Utility.Convert<object>(records);
+            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
         }
 
-        public async Task<IEnumerable<object>> GetAsync(IDictionary<string, object> keyValuePairs)
+        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs)
         {
             var searchDocument = Utility.CreateSearchBsonDocument(keyValuePairs);
-            var records = await Collection.Find(searchDocument)
+            var query = Collection.Find(searchDocument);
+
+            long totalCount = await query.CountDocumentsAsync();
+            var records = await query.Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+                .Skip((currentPage - 1) * pageSize)
+                .Limit(pageSize)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
-                .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
                 .ToListAsync();
 
-            return Utility.Convert<object>(records);
+            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
         }
 
-        public async Task<IEnumerable<object>> GetAsync(FilterDefinition<BsonDocument> filter)
+        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter)
         {
-            var records = await Collection.Find(filter)
+            var query = Collection.Find(filter);
+
+            long totalCount = await query.CountDocumentsAsync();
+            var records = await query.Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+                .Skip((currentPage - 1) * pageSize)
+                .Limit(pageSize)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
-                .Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
                 .ToListAsync();
 
-            return Utility.Convert<object>(records);
+            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
         }
 
         public async Task<bool> UpdateAsync(string collectionId, string name)
