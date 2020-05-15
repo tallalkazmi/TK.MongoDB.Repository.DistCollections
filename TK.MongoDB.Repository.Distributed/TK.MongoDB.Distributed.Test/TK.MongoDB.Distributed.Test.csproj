@@ -112,6 +112,7 @@
     <Compile Include="MasterUnitTest.cs" />
     <Compile Include="MessageUnitTest.cs" />
     <Compile Include="Models\CompanyMessage.cs" />
+    <Compile Include="ViewModels\MasterGetViewModel.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CompanyMessageUnitTest.cs" />

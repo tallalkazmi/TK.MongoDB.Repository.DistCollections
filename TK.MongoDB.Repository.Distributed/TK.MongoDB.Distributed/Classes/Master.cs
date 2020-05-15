@@ -189,6 +189,8 @@ namespace TK.MongoDB.Distributed.Classes
 
         private void BeforeInsert(BsonDocument doc)
         {
+            if (PropertiesBeforeInsert == null || PropertiesBeforeInsert.Count() == 0) return;
+
             foreach (var prop in PropertiesBeforeInsert)
             {
                 doc.SetElement(new BsonElement(prop.Key, BsonValue.Create(prop.Value)));
@@ -197,6 +199,8 @@ namespace TK.MongoDB.Distributed.Classes
 
         private void AfterInsert(BsonDocument doc)
         {
+            if (PropertiesAfterInsert == null || PropertiesAfterInsert.Count() == 0) return;
+
             var filterDef = new FilterDefinitionBuilder<BsonDocument>();
             var updateDef = new UpdateDefinitionBuilder<BsonDocument>();
 

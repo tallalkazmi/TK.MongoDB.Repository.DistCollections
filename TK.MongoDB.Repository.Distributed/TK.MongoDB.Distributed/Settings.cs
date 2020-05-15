@@ -36,7 +36,7 @@ namespace TK.MongoDB.Distributed
         /// <summary>
         /// Additional properties for Master collection [Optional].
         /// </summary>
-        public static IEnumerable<string> AdditionalProperties { get; set; }
+        public static string[] AdditionalProperties { get; set; }
 
         /// <summary>
         /// Set properties and their values to auto-update after the specified trigger is fired.

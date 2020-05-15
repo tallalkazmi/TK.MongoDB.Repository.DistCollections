@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TK.MongoDB.Distributed.Test.ViewModels;
 
 namespace TK.MongoDB.Distributed.Test
 {
@@ -18,8 +21,9 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Get()
         {
-            var result = await MasterRepository.GetAsync(1, 2);
-            Console.WriteLine($"Output:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
+            var result = await MasterRepository.GetAsync(1, 20);
+            var records = BsonSerializer.Deserialize<IEnumerable<MasterGetViewModel>>(result.Item1.ToJson());
+            Console.WriteLine($"Output:Total:{result.Item2}\nRecords:{JToken.Parse(JsonConvert.SerializeObject(records)).ToString(Formatting.Indented)}");
         }
 
         [TestMethod]
@@ -30,8 +34,9 @@ namespace TK.MongoDB.Distributed.Test
                 { "Client", 1 }
             };
 
-            var result = await MasterRepository.GetAsync(1, 2, keyValuePairs);
-            Console.WriteLine($"Output:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
+            var result = await MasterRepository.GetAsync(1, 20, keyValuePairs);
+            var records = BsonSerializer.Deserialize<IEnumerable<MasterGetViewModel>>(result.Item1.ToJson());
+            Console.WriteLine($"Output:Total:{result.Item2}\nRecords:{JToken.Parse(JsonConvert.SerializeObject(records)).ToString(Formatting.Indented)}");
         }
 
         //[TestMethod]

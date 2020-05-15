@@ -11,9 +11,10 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      Pagination added to Master collection listing methods.
-      Included options to add additional properties to Master collection.
-      Included triggers to add/update properties to Master collection.
+      Bug when Guid is added to MasterAddtionalProperties resolved.
+      MasterAddtionalProperties changed to string array.
+      MasterRepository Get methods now return BsonDocument list instead of object list.
+      Unit tests updated.
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>

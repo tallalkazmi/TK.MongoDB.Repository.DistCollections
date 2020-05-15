@@ -6,7 +6,6 @@ using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TK.MongoDB.Distributed.Test.Models;
-using static TK.MongoDB.Distributed.MasterSettings;
 
 namespace TK.MongoDB.Distributed.Test
 {
@@ -18,7 +17,7 @@ namespace TK.MongoDB.Distributed.Test
         public MessageUnitTest()
         {
             Settings.ConnectionStringSettingName = "MongoDocConnection";
-            MasterSettings.AdditionalProperties = new List<string>() { "CreatedBy" };
+            MasterSettings.AdditionalProperties = new string[] { "CreatedBy" };
 
             CollectionId = "2b9f7ce62870424e84cfeedcaf2670fe";
         }
@@ -40,8 +39,8 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Insert()
         {
-            SetProperties(new Dictionary<string, object>() { { "CreatedBy", "123456789123456789123456" } }, Triggers.BeforeInsert);
-            SetProperties(new Dictionary<string, object>() { { "CreatedBy", "999999999999999999999999" } }, Triggers.AfterInsert);
+            MasterSettings.SetProperties(new Dictionary<string, object>() { { "CreatedBy", Guid.Parse("FC09E7EE-5E78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.BeforeInsert);
+            //MasterSettings.SetProperties(new Dictionary<string, object>() { { "CreatedBy", Guid.Parse("6B9F4B43-5F78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.AfterInsert);
             Message message = new Message()
             {
                 Text = $"Test message # {DateTime.UtcNow.ToShortTimeString()}",

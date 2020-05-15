@@ -19,7 +19,7 @@ namespace TK.MongoDB.Distributed.Data
             Collection = Context.Database.GetCollection<BsonDocument>(CollectionName);
         }
 
-        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize)
+        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize)
         {
             var query = Collection.Find(new BsonDocument());
 
@@ -30,10 +30,10 @@ namespace TK.MongoDB.Distributed.Data
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
                 .ToListAsync();
 
-            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
+            return new Tuple<IEnumerable<BsonDocument>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs)
+        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs)
         {
             var searchDocument = Utility.CreateSearchBsonDocument(keyValuePairs);
             var query = Collection.Find(searchDocument);
@@ -45,10 +45,10 @@ namespace TK.MongoDB.Distributed.Data
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
                 .ToListAsync();
 
-            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
+            return new Tuple<IEnumerable<BsonDocument>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<object>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter)
+        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter)
         {
             var query = Collection.Find(filter);
 
@@ -59,7 +59,7 @@ namespace TK.MongoDB.Distributed.Data
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
                 .ToListAsync();
 
-            return new Tuple<IEnumerable<object>, long>(Utility.Convert<object>(records), totalCount);
+            return new Tuple<IEnumerable<BsonDocument>, long>(records, totalCount);
         }
 
         public async Task<bool> UpdateAsync(string collectionId, string property, object value)

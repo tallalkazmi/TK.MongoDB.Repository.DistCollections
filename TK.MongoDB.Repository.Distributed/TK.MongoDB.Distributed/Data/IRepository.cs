@@ -51,7 +51,7 @@ namespace TK.MongoDB.Distributed.Data
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="instance">Document</param>
-        /// <returns></returns>
+        /// <returns>Boolean</returns>
         Task<bool> UpdateAsync(string collectionId, T instance);
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="id">Key</param>
         /// <param name="logical">Soft delete</param>
-        /// <returns></returns>
+        /// <returns>Boolean</returns>
         Task<bool> DeleteAsync(string collectionId, ObjectId id, bool logical = true);
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace TK.MongoDB.Distributed.Data
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="condition">Lamda expression</param>
-        /// <returns></returns>
+        /// <returns>Count</returns>
         Task<long> CountAsync(string collectionId, Expression<Func<T, bool>> condition = null);
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace TK.MongoDB.Distributed.Data
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="condition">Lamda expression</param>
-        /// <returns></returns>
+        /// <returns>Boolean</returns>
         Task<bool> ExistsAsync(string collectionId, Expression<Func<T, bool>> condition);
     }
 }
