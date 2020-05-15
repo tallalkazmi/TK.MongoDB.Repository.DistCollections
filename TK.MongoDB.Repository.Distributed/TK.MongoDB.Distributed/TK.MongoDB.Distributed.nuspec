@@ -11,12 +11,12 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      Bug when Guid is added to MasterAddtionalProperties resolved.
-      MasterAddtionalProperties changed to string array.
-      MasterRepository Get methods now return BsonDocument list instead of object list.
-      Unit tests updated.
+      Dependencies fixed
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.6.1" />
+    </dependencies>
   </metadata>
 </package>
