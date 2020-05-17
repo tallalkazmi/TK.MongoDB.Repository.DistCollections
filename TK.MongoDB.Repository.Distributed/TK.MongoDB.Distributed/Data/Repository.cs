@@ -42,6 +42,16 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
         }
 
+        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition = null)
+        {
+            Collection = Context.Database.GetCollection<T>(collectionId);
+            var query = Collection.Find<T>(condition);
+
+            long totalCount = await query.CountDocumentsAsync();
+            List<T> records = await query.SortByDescending(x => x.CreationDate).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
+            return new Tuple<IEnumerable<T>, long>(records, totalCount);
+        }
+
         public async Task<T> InsertAsync(T instance)
         {
             string CollectionName = Master.RetriveCollectionFromMaster(instance);

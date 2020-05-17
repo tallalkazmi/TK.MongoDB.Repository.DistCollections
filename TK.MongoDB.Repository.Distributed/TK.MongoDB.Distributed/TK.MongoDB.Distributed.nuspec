@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      Dependencies fixed
+      FilterDefinitaion overload added to GetAsync method of IRepository
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>

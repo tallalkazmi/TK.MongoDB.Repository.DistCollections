@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TK.MongoDB.Distributed.Test.Models;
+using TK.MongoDB.Distributed.Test.ViewModels;
 
 namespace TK.MongoDB.Distributed.Test
 {
@@ -33,6 +35,47 @@ namespace TK.MongoDB.Distributed.Test
         public async Task Get()
         {
             var result = await MessageRepository.GetAsync(CollectionId, 1, 10, x => x.Text.Contains("abc"));
+            Console.WriteLine($"Output:\nTotal: {result.Item2}\n{JToken.Parse(JsonConvert.SerializeObject(result.Item1)).ToString(Formatting.Indented)}");
+        }
+
+        [TestMethod]
+        public async Task Search()
+        {
+            MessageSearchParameters searchParameters = new MessageSearchParameters()
+            {
+                Text = "Change",
+                Caterer = null,
+                Client = null,
+                Order = null
+            };
+
+            var builder = Builders<Message>.Filter;
+            var filter = builder.Empty;
+            if (!string.IsNullOrWhiteSpace(searchParameters.Text))
+            {
+                var criteriaFilter = builder.Regex(x => x.Text, new BsonRegularExpression($".*{searchParameters.Text}.*"));
+                filter &= criteriaFilter;
+            }
+
+            if (searchParameters.Caterer.HasValue)
+            {
+                var criteriaFilter = builder.Eq(x => x.Caterer, searchParameters.Caterer.Value);
+                filter &= criteriaFilter;
+            }
+
+            if (searchParameters.Client.HasValue)
+            {
+                var criteriaFilter = builder.Eq(x => x.Client, searchParameters.Client.Value);
+                filter &= criteriaFilter;
+            }
+
+            if (searchParameters.Order.HasValue)
+            {
+                var criteriaFilter = builder.Eq(x => x.Order, searchParameters.Order.Value);
+                filter &= criteriaFilter;
+            }
+
+            var result = await MessageRepository.GetAsync(CollectionId, 1, 10, filter);
             Console.WriteLine($"Output:\nTotal: {result.Item2}\n{JToken.Parse(JsonConvert.SerializeObject(result.Item1)).ToString(Formatting.Indented)}");
         }
 
