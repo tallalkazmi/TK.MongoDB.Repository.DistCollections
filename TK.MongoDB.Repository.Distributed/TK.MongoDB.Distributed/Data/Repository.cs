@@ -42,7 +42,7 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition = null)
+        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
             var query = Collection.Find<T>(condition);
