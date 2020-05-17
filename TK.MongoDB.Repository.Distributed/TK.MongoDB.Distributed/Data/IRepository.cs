@@ -40,7 +40,7 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="pageSize">Page size</param>
         /// <param name="condition">Filter definition</param>
         /// <returns>Tuple of records and total number of records</returns>
-        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition = null);
+        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition);
 
         /// <summary>
         /// Inserts single record.
