@@ -19,6 +19,12 @@ namespace TK.MongoDB.Distributed.Data
             Collection = Context.Database.GetCollection<BsonDocument>(CollectionName);
         }
 
+        public async Task<BsonDocument> FindAsync(FilterDefinition<BsonDocument> filter)
+        {
+            var query = Collection.Find(filter);
+            return await query.FirstOrDefaultAsync();
+        }
+
         public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize)
         {
             var query = Collection.Find(new BsonDocument());

@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      FilterDefinitaion overload added to GetAsync method of IRepository
+      FindAsync method added to IMasterRepository
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
