@@ -45,7 +45,6 @@ A master collection, created by default, acts as an reference index to all the c
 
    ```c#
    MasterSettings.SetProperties(new Dictionary<string, object>() { { "CreatedBy", Guid.Parse("FC09E7EE-5E78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.BeforeInsert);
-   
    MasterSettings.SetProperties(new Dictionary<string, object>() { { "UpdatedBy", Guid.Parse("6B9F4B43-5F78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.AfterInsert);
                
    Message message = new Message()
@@ -125,7 +124,7 @@ public class Message : BaseEntity
    - Has paged records in a `Tuple<IEnumerable<T>, long>` of records and total count.
    
    
-      ```c#
+   ```c#
    MessageSearchParameters searchParameters = new MessageSearchParameters()
    {
        Text = "Change",
@@ -162,28 +161,28 @@ public class Message : BaseEntity
    }
       
    var result = await MessageRepository.GetAsync(CollectionId, 1, 10, filter);
-      ```
+   ```
    
 4. Insert *asynchronous* 
 
-  ```c#
-  Message message = new Message()
-  {
-      Text = "xyz",
-      Client = 2,
-      Caterer = 2
-  };
-  
-  Message result = await MessageRepository.InsertAsync(message);
-  ```
+   ```c#
+   Message message = new Message()
+   {
+         Text = "xyz",
+         Client = 2,
+         Caterer = 2
+   };
+   
+   Message result = await MessageRepository.InsertAsync(message);
+   ```
 
 5. Update *asynchronous* 
 
    ```c#
    Message message = new Message()
    {
-   	Id = new ObjectId("5e36998998d2c1540ca23894"),
-   	Text = "Changed"
+   	   Id = new ObjectId("5e36998998d2c1540ca23894"),
+   	   Text = "Changed"
    };
    
    bool result = await MessageRepository.UpdateAsync(CollectionId, message);
