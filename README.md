@@ -137,8 +137,7 @@ public class Message : BaseEntity
    var filter = builder.Empty;
    if (!string.IsNullOrWhiteSpace(searchParameters.Text))
    {
-       var criteriaFilter = builder.Regex(x => x.Text, 
-   new BsonRegularExpression($".*{searchParameters.Text}.*"));
+       var criteriaFilter = builder.Regex(x => x.Text, new BsonRegularExpression($".*{searchParameters.Text}.*"));
        filter &= criteriaFilter;
    }
       
@@ -181,8 +180,8 @@ public class Message : BaseEntity
    ```c#
    Message message = new Message()
    {
-   	   Id = new ObjectId("5e36998998d2c1540ca23894"),
-   	   Text = "Changed"
+         Id = new ObjectId("5e36998998d2c1540ca23894"),
+         Text = "Changed"
    };
    
    bool result = await MessageRepository.UpdateAsync(CollectionId, message);
@@ -202,9 +201,9 @@ public class Message : BaseEntity
 
 8. Exists *asynchronous* (using LINQ Expression)
 
-  ```c#
-  bool result = await MessageRepository.ExistsAsync(CollectionId, x => x.Text == "abc");
-  ```
+   ```c#
+   bool result = await MessageRepository.ExistsAsync(CollectionId, x => x.Text == "abc");
+   ```
 
 ### Master Repository methods
 
