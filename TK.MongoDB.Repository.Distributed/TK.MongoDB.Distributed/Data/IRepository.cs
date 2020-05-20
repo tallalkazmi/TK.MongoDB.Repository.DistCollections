@@ -11,7 +11,7 @@ namespace TK.MongoDB.Distributed.Data
     /// <summary>
     /// Data Repository
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of BaseEntity</typeparam>
     public interface IRepository<T> : IDisposable where T : BaseEntity
     {
         /// <summary>
@@ -29,8 +29,10 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="currentPage">Page number</param>
         /// <param name="pageSize">Page size</param>
         /// <param name="condition">Lamda expression</param>
+        /// <param name="orderBy">Order by column</param>
+        /// <param name="orderByDescending">Order By Descending</param>
         /// <returns>Tuple of records and total number of records</returns>
-        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, Expression<Func<T, bool>> condition = null);
+        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true);
 
         /// <summary>
         /// Gets document by condition specified or gets all documents if condition is not passed. Paged records.
@@ -38,16 +40,17 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="currentPage">Page number</param>
         /// <param name="pageSize">Page size</param>
-        /// <param name="condition">Filter definition</param>
+        /// <param name="filter">Filter definition</param>
+        /// <param name="sort">Sort definition</param>
         /// <returns>Tuple of records and total number of records</returns>
-        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition);
+        Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> filter, SortDefinition<T> sort = null);
 
         /// <summary>
         /// Inserts single record.
         /// </summary>
         /// <param name="instance">Document</param>
         /// <returns>Document</returns>
-        Task<T> InsertAsync(T instance);
+        Task<InsertResult<T>> InsertAsync(T instance);
 
         /// <summary>
         /// Inserts single record.
@@ -55,7 +58,7 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="instance">Document</param>
         /// <returns>Document</returns>
-        Task<T> InsertAsync(string collectionId, T instance);
+        Task<InsertResult<T>> InsertAsync(string collectionId, T instance);
 
         /// <summary>
         /// Updates single record based on Id.
@@ -63,7 +66,7 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="instance">Document</param>
         /// <returns>Boolean</returns>
-        Task<bool> UpdateAsync(string collectionId, T instance);
+        Task<UpdateResult<T>> UpdateAsync(string collectionId, T instance);
 
         /// <summary>
         /// Deletes record based on Id hard or soft based on logical value.

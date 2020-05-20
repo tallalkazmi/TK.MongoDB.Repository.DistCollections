@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TK.MongoDB.Distributed.Classes;
@@ -30,43 +31,49 @@ namespace TK.MongoDB.Distributed.Data
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, Expression<Func<T, bool>> condition = null)
+        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
 
-            if (condition == null) condition = _ => true;            
+            if (condition == null) condition = _ => true;
             var query = Collection.Find<T>(condition);
-
             long totalCount = await query.CountDocumentsAsync();
-            List<T> records = await query.SortByDescending(x => x.CreationDate).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
+
+            IOrderedFindFluent<T, T> SortedResults;
+            if (orderBy != null && orderByDescending) SortedResults = query.SortByDescending(orderBy);
+            else if (orderBy != null && !orderByDescending) SortedResults = query.SortBy(orderBy);
+            else SortedResults = query.SortByDescending(x => x.CreationDate);
+
+            List<T> records = await SortedResults.Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> condition)
+        public async Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> filter, SortDefinition<T> sort = null)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
-            var query = Collection.Find<T>(condition);
-
+            var query = Collection.Find<T>(filter);
             long totalCount = await query.CountDocumentsAsync();
-            List<T> records = await query.SortByDescending(x => x.CreationDate).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
+
+            if (sort == null) sort = Builders<T>.Sort.Descending(x => x.CreationDate);
+            List<T> records = await query.Sort(sort).Skip((currentPage - 1) * pageSize).Limit(pageSize).ToListAsync();
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
         }
 
-        public async Task<T> InsertAsync(T instance)
+        public async Task<InsertResult<T>> InsertAsync(T instance)
         {
-            string CollectionName = Master.RetriveCollectionFromMaster(instance);
-            Collection = Context.Database.GetCollection<T>(CollectionName);
+            string CollectionId = Master.RetriveCollectionFromMaster(instance);
+            Collection = Context.Database.GetCollection<T>(CollectionId);
 
             instance.Id = ObjectId.GenerateNewId();
             instance.CreationDate = DateTime.UtcNow;
             instance.UpdationDate = null;
             await Collection.InsertOneAsync(instance);
 
-            Master.SetUpdateDateTime(CollectionName);
-            return instance;
+            Master.SetUpdateDateTime(CollectionId);
+            return new InsertResult<T>(CollectionId, instance);
         }
 
-        public async Task<T> InsertAsync(string collectionId, T instance)
+        public async Task<InsertResult<T>> InsertAsync(string collectionId, T instance)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
 
@@ -76,10 +83,10 @@ namespace TK.MongoDB.Distributed.Data
             await Collection.InsertOneAsync(instance);
 
             Master.SetUpdateDateTime(collectionId);
-            return instance;
+            return new InsertResult<T>(collectionId, instance);
         }
 
-        public async Task<bool> UpdateAsync(string collectionId, T instance)
+        public async Task<UpdateResult<T>> UpdateAsync(string collectionId, T instance)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
 
@@ -95,7 +102,7 @@ namespace TK.MongoDB.Distributed.Data
             ReplaceOneResult result = await Collection.ReplaceOneAsync<T>(x => x.Id == instance.Id, instance);
             bool ret = result.ModifiedCount != 0;
             if (ret) Master.SetUpdateDateTime(collectionId);
-            return ret;
+            return new UpdateResult<T>(ret, instance);
         }
 
         public async Task<bool> DeleteAsync(string collectionId, ObjectId id, bool logical = true)

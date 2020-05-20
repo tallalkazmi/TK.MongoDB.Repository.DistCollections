@@ -39,13 +39,18 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<BsonDocument>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs)
+        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs, string orderbyColumn = "CreationDate", bool orderByDescending = true)
         {
             var searchDocument = Utility.CreateSearchBsonDocument(keyValuePairs);
             var query = Collection.Find(searchDocument);
 
             long totalCount = await query.CountDocumentsAsync();
-            var records = await query.Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+
+            SortDefinition<BsonDocument> sort;
+            if (orderByDescending) sort = Builders<BsonDocument>.Sort.Descending(orderbyColumn);
+            else sort = Builders<BsonDocument>.Sort.Ascending(orderbyColumn);
+
+            var records = await query.Sort(sort)
                 .Skip((currentPage - 1) * pageSize)
                 .Limit(pageSize)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))
@@ -54,12 +59,14 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<BsonDocument>, long>(records, totalCount);
         }
 
-        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter)
+        public async Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter, SortDefinition<BsonDocument> sort = null)
         {
             var query = Collection.Find(filter);
-
             long totalCount = await query.CountDocumentsAsync();
-            var records = await query.Sort(Builders<BsonDocument>.Sort.Descending("CreationDate"))
+
+            if (sort == null) sort = Builders<BsonDocument>.Sort.Descending("CreationDate");
+
+            var records = await query.Sort(sort)
                 .Skip((currentPage - 1) * pageSize)
                 .Limit(pageSize)
                 .Project(Builders<BsonDocument>.Projection.Exclude("_id"))

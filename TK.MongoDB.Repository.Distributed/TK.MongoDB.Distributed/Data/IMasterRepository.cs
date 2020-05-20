@@ -32,8 +32,10 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="currentPage">Page number</param>
         /// <param name="pageSize">Page size</param>
         /// <param name="keyValuePairs">Element name and value to search for</param>
+        /// <param name="orderbyColumn">Column to Order by</param>
+        /// <param name="orderByDescending">Order by Descending</param>
         /// <returns>Documents</returns>
-        Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs);
+        Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, IDictionary<string, object> keyValuePairs, string orderbyColumn = "CreationDate", bool orderByDescending = true);
 
         /// <summary>
         /// Gets documents satisfying filter condition
@@ -41,8 +43,9 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="currentPage">Page number</param>
         /// <param name="pageSize">Page size</param>
         /// <param name="filter">Filter Definition</param>
+        /// <param name="sort">Sort Definition</param>
         /// <returns>Documents</returns>
-        Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter);
+        Task<Tuple<IEnumerable<BsonDocument>, long>> GetAsync(int currentPage, int pageSize, FilterDefinition<BsonDocument> filter, SortDefinition<BsonDocument> sort = null);
 
         /// <summary>
         /// Updates 'Name' of a document in the collection identified by 'Collection Id'

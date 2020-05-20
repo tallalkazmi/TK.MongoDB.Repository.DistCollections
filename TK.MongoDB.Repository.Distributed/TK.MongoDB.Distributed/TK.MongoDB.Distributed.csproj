@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Master.cs" />
+    <Compile Include="Models\Results.cs" />
     <Compile Include="Models\DistributionAttributes.cs" />
     <Compile Include="Classes\MongoDBContext.cs" />
     <Compile Include="Models\BaseEntity.cs" />

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TK.MongoDB.Distributed.Models;
 using TK.MongoDB.Distributed.Test.Models;
 
 namespace TK.MongoDB.Distributed.Test
@@ -24,11 +25,11 @@ namespace TK.MongoDB.Distributed.Test
                 Company = 1
             };
 
-            var result = await CompanyMessageRepository.InsertAsync(message);
-            Console.WriteLine($"Inserted:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
-            
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(CompanyMessage));
+            InsertResult<CompanyMessage> result = await CompanyMessageRepository.InsertAsync(message);
+            Console.WriteLine($"Success:{result.Success}\nCollectionId:{result.CollectionId}\nInserted:\n{JToken.Parse(JsonConvert.SerializeObject(result.Result)).ToString(Formatting.Indented)}");
+
+            Assert.IsNotNull(result.Result);
+            Assert.IsInstanceOfType(result.Result, typeof(CompanyMessage));
         }
     }
 }

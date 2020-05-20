@@ -6,6 +6,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TK.MongoDB.Distributed.Models;
 using TK.MongoDB.Distributed.Test.Models;
 using TK.MongoDB.Distributed.Test.ViewModels;
 
@@ -34,7 +35,7 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Get()
         {
-            var result = await MessageRepository.GetAsync(CollectionId, 1, 10, x => x.Text.Contains("abc"));
+            var result = await MessageRepository.GetAsync(CollectionId, 1, 20);
             Console.WriteLine($"Output:\nTotal: {result.Item2}\n{JToken.Parse(JsonConvert.SerializeObject(result.Item1)).ToString(Formatting.Indented)}");
         }
 
@@ -91,11 +92,11 @@ namespace TK.MongoDB.Distributed.Test
                 Caterer = 4
             };
 
-            Message result = await MessageRepository.InsertAsync(message);
-            Console.WriteLine($"Inserted:\n{JToken.Parse(JsonConvert.SerializeObject(result)).ToString(Formatting.Indented)}");
+            InsertResult<Message> result = await MessageRepository.InsertAsync(message);
+            Console.WriteLine($"Success:{result.Success}\nCollectionId:{result.CollectionId}\nInserted:\n{JToken.Parse(JsonConvert.SerializeObject(result.Result)).ToString(Formatting.Indented)}");
 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(Message));
+            Assert.IsNotNull(result.Result);
+            Assert.IsInstanceOfType(result.Result, typeof(Message));
         }
 
         [TestMethod]
@@ -104,11 +105,11 @@ namespace TK.MongoDB.Distributed.Test
             Message message = new Message()
             {
                 Id = new ObjectId("5ebc525898d2c15c8839b4f5"),
-                Text = "Changed"
+                Text = $"Changed @ {DateTime.UtcNow.ToShortTimeString()}"
             };
 
-            bool result = await MessageRepository.UpdateAsync(CollectionId, message);
-            Console.WriteLine($"Updated: {result}");
+            UpdateResult<Message> result = await MessageRepository.UpdateAsync(CollectionId, message);
+            Console.WriteLine($"Success:{result.Success}\nUpdated:\n{JToken.Parse(JsonConvert.SerializeObject(result.Result)).ToString(Formatting.Indented)}");
         }
 
         [TestMethod]
