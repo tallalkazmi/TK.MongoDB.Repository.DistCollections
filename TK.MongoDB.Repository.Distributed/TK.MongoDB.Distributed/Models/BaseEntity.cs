@@ -24,8 +24,8 @@ namespace TK.MongoDB.Distributed.Models
         public DateTime CreationDate { get; internal set; }
 
         /// <summary>
-        /// Record updated on date. Defaults to <c>null</c> and automatically sets <c>DateTime.UtcNow</c> on update.
+        /// Record updated on date. Defaults to <c>DateTime.UtcNow</c> and automatically sets <c>DateTime.UtcNow</c> on update.
         /// </summary>
-        public DateTime? UpdationDate { get; internal set; }
+        public DateTime UpdationDate { get; internal set; }
     }
 }

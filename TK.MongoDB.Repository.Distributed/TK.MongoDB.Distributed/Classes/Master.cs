@@ -58,7 +58,7 @@ namespace TK.MongoDB.Distributed.Classes
                     { "CollectionId", GeneratedCollectionId },
                     { "ParentCollectionId", null },
                     { "CreationDate", DateTime.UtcNow},
-                    { "UpdationDate", null}
+                    { "UpdationDate", DateTime.UtcNow}
                 };
 
                 AddValues.AddKeys(AdditionalProperties);
@@ -108,7 +108,7 @@ namespace TK.MongoDB.Distributed.Classes
                         { "CollectionId", GeneratedCollectionId },
                         { "ParentCollectionId", string.IsNullOrWhiteSpace(parentCollectionId) ? null : parentCollectionId },
                         { "CreationDate", DateTime.UtcNow},
-                        { "UpdationDate", null}
+                        { "UpdationDate", DateTime.UtcNow}
                     };
 
                     AddValues.AddKeys(AdditionalProperties);

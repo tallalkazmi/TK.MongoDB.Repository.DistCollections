@@ -66,7 +66,7 @@ namespace TK.MongoDB.Distributed.Data
 
             instance.Id = ObjectId.GenerateNewId();
             instance.CreationDate = DateTime.UtcNow;
-            instance.UpdationDate = null;
+            instance.UpdationDate = DateTime.UtcNow;
             await Collection.InsertOneAsync(instance);
 
             Master.SetUpdateDateTime(CollectionId);
@@ -79,7 +79,7 @@ namespace TK.MongoDB.Distributed.Data
 
             instance.Id = ObjectId.GenerateNewId();
             instance.CreationDate = DateTime.UtcNow;
-            instance.UpdationDate = null;
+            instance.UpdationDate = DateTime.UtcNow;
             await Collection.InsertOneAsync(instance);
 
             Master.SetUpdateDateTime(collectionId);

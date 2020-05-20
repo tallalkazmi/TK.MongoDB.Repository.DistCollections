@@ -11,8 +11,7 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      Sort option added to all repositories Get methods.
-      InsertResult and UpdateResult models added to Insert and Update methods in IRepository.
+      UpdationDate set same as CreationDate on insert instead of null, in order to have consistent sorting.
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>

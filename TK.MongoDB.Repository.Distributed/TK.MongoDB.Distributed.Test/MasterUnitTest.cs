@@ -23,7 +23,7 @@ namespace TK.MongoDB.Distributed.Test
         public async Task Find()
         {
             var builder = Builders<BsonDocument>.Filter;
-            var collectionFilter = builder.Eq("CollectionId", "c7a7935f1ebd440e9b85003c1b81b3c3");
+            var collectionFilter = builder.Eq("CollectionId", "799ac8f9b9a845568ab77c3dc9a32f6b");
 
             var result = await MasterRepository.FindAsync(collectionFilter);
             var record = BsonSerializer.Deserialize<MasterGetViewModel>(result.ToJson());

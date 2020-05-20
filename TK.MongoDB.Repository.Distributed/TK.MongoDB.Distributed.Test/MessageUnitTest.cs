@@ -22,7 +22,7 @@ namespace TK.MongoDB.Distributed.Test
             Settings.ConnectionStringSettingName = "MongoDocConnection";
             MasterSettings.AdditionalProperties = new string[] { "CreatedBy" };
 
-            CollectionId = "2b9f7ce62870424e84cfeedcaf2670fe";
+            CollectionId = "799ac8f9b9a845568ab77c3dc9a32f6b";
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace TK.MongoDB.Distributed.Test
         {
             Message message = new Message()
             {
-                Id = new ObjectId("5ebc525898d2c15c8839b4f5"),
+                Id = new ObjectId("5ec50c0098d2c12c2c4960d5"),
                 Text = $"Changed @ {DateTime.UtcNow.ToShortTimeString()}"
             };
 
@@ -115,7 +115,7 @@ namespace TK.MongoDB.Distributed.Test
         [TestMethod]
         public async Task Delete()
         {
-            bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5ebc525898d2c15c8839b4f5"));
+            bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5ec50c0098d2c12c2c4960d5"));
             Console.WriteLine($"Deleted: {result}");
         }
 
