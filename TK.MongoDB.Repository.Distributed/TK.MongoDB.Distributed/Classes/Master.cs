@@ -20,10 +20,11 @@ namespace TK.MongoDB.Distributed.Classes
             Collection = Context.Database.GetCollection<BsonDocument>(CollectionName);
         }
 
-        public string RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity
+        public CollectionIds RetriveCollectionFromMaster<T>(T obj) where T : BaseEntity
         {
             // Resulted Collection Name
             string RetrivedCollectionId = null;
+            string ParentCollectionId = null;
 
             //Get Distributed Columns
             Dictionary<string, object> KeyValues = new Dictionary<string, object>();
@@ -92,7 +93,7 @@ namespace TK.MongoDB.Distributed.Classes
                 long count = query.CountDocuments();
                 if (count == 0)
                 {
-                    string parentCollectionId = GetRootCollectionId(KeyValues, Distribution);
+                    ParentCollectionId = GetRootCollectionId(KeyValues, Distribution);
 
                     //Generate CollectionId for Collection Name.
                     string GeneratedCollectionId = Guid.NewGuid().ToString("N");
@@ -106,7 +107,7 @@ namespace TK.MongoDB.Distributed.Classes
                     {
                         { "Name", "Untitled" },
                         { "CollectionId", GeneratedCollectionId },
-                        { "ParentCollectionId", string.IsNullOrWhiteSpace(parentCollectionId) ? null : parentCollectionId },
+                        { "ParentCollectionId", string.IsNullOrWhiteSpace(ParentCollectionId) ? null : ParentCollectionId },
                         { "CreationDate", DateTime.UtcNow},
                         { "UpdationDate", DateTime.UtcNow}
                     };
@@ -123,7 +124,7 @@ namespace TK.MongoDB.Distributed.Classes
                     SetCollectionIndexes<T>(GeneratedCollectionId);
 
                     //Return GeneratedCollectionId if ParentCollectionId is null
-                    RetrivedCollectionId = string.IsNullOrWhiteSpace(parentCollectionId) ? GeneratedCollectionId : parentCollectionId;
+                    RetrivedCollectionId = string.IsNullOrWhiteSpace(ParentCollectionId) ? GeneratedCollectionId : ParentCollectionId;
                 }
                 else if (count > 1) throw new SystemException("More than one collections found for the criterion");
                 else
@@ -131,13 +132,13 @@ namespace TK.MongoDB.Distributed.Classes
                     //Get CollectionId
                     RetrivedCollectionId = query.FirstOrDefault().GetValue("CollectionId").AsString;
 
-                    string parentCollectionId = GetRootCollectionId(KeyValues, Distribution);
-                    if (RetrivedCollectionId != parentCollectionId) SetParentUpdateDateTime(KeyValues, parentCollectionId);
+                    ParentCollectionId = GetRootCollectionId(KeyValues, Distribution);
+                    if (RetrivedCollectionId != ParentCollectionId) SetParentUpdateDateTime(KeyValues, ParentCollectionId);
                 }
             }
 
             if (RetrivedCollectionId == null) throw new SystemException("Collection with the criterion does not exists");
-            return RetrivedCollectionId;
+            return new CollectionIds() { ParentCollectionId = ParentCollectionId, RetrivedCollectionId = RetrivedCollectionId };
         }
 
         public bool SetUpdateDateTime(string collectionId)
@@ -209,5 +210,11 @@ namespace TK.MongoDB.Distributed.Classes
                 Collection.UpdateOne(filterDef.Eq("CollectionId", doc.GetValue("CollectionId")), updateDef.Set(prop.Key, BsonValue.Create(prop.Value)));
             }
         }
+    }
+
+    internal struct CollectionIds
+    {
+        public string RetrivedCollectionId { get; set; }
+        public string ParentCollectionId { get; set; }
     }
 }

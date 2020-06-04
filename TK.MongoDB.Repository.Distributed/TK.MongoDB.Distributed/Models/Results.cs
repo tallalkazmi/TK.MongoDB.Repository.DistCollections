@@ -12,11 +12,23 @@
             Result = result;
         }
 
+        internal InsertResult(string collectionId, string parentCollectionId, T result)
+        {
+            CollectionId = collectionId;
+            ParentCollectionId = parentCollectionId;
+            Result = result;
+        }
+
         /// <summary>
         /// Inserted Collection Id
         /// </summary>
         public string CollectionId { get; private set; }
-        
+
+        /// <summary>
+        /// Parent Collection Id
+        /// </summary>
+        public string ParentCollectionId { get; private set; }
+
         /// <summary>
         /// Insert operation success
         /// </summary>
