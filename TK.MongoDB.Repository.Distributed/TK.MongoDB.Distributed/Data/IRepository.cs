@@ -88,6 +88,14 @@ namespace TK.MongoDB.Distributed.Data
         Task<UpdateResult<T>> UpdateAsync(string collectionId, T instance);
 
         /// <summary>
+        /// Bulk update records based on their Id with IsUpsert = false.
+        /// </summary>
+        /// <param name="collectionId">Targeted Collection Id</param>
+        /// <param name="instances">Documents to update</param>
+        /// <returns>Number of documents updated</returns>
+        Task<long> BulkUpdateAsync(string collectionId, IEnumerable<T> instances);
+
+        /// <summary>
         /// Deletes record based on Id hard or soft based on logical value.
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>

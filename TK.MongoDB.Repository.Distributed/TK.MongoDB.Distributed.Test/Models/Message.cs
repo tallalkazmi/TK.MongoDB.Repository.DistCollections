@@ -1,4 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Options;
+using System;
+using System.Collections.Generic;
 using TK.MongoDB.Distributed.Models;
 
 namespace TK.MongoDB.Distributed.Test.Models
@@ -19,5 +22,8 @@ namespace TK.MongoDB.Distributed.Test.Models
 
         [Distribute(Level = 1)]
         public long? Order { get; set; }
+
+        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+        public Dictionary<Guid, DateTime> Read { get; set; }
     }
 }

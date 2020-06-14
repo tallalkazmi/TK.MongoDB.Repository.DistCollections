@@ -129,6 +129,22 @@ namespace TK.MongoDB.Distributed.Data
             return new UpdateResult<T>(ret, instance);
         }
 
+        public async Task<long> BulkUpdateAsync(string collectionId, IEnumerable<T> instances)
+        {
+            Collection = Context.Database.GetCollection<T>(collectionId);
+
+            var bulkOps = new List<WriteModel<T>>();
+            foreach (var instance in instances)
+            {
+                var filter = Builders<T>.Filter.Eq(x => x.Id, instance.Id);
+                var upsertOne = new ReplaceOneModel<T>(filter, instance) { IsUpsert = false };
+                bulkOps.Add(upsertOne);
+            }
+
+            BulkWriteResult bulkWriteResult = await Collection.BulkWriteAsync(bulkOps);
+            return bulkWriteResult.ModifiedCount;
+        }
+
         public async Task<bool> DeleteAsync(string collectionId, ObjectId id, bool logical = true)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
