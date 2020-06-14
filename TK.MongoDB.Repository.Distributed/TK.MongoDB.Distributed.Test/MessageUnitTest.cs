@@ -99,7 +99,7 @@ namespace TK.MongoDB.Distributed.Test
             Assert.IsInstanceOfType(result.Result, typeof(Message));
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task Update()
         {
             Message message = new Message()
@@ -112,7 +112,7 @@ namespace TK.MongoDB.Distributed.Test
             Console.WriteLine($"Success:{result.Success}\nUpdated:\n{JToken.Parse(JsonConvert.SerializeObject(result.Result)).ToString(Formatting.Indented)}");
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task Delete()
         {
             bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5ec50c0098d2c12c2c4960d5"));

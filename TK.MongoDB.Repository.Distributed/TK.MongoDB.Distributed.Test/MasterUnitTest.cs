@@ -19,7 +19,7 @@ namespace TK.MongoDB.Distributed.Test
             Settings.ConnectionStringSettingName = "MongoDocConnection";
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task Find()
         {
             var builder = Builders<BsonDocument>.Filter;
