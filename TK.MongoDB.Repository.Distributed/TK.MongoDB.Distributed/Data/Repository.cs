@@ -59,6 +59,30 @@ namespace TK.MongoDB.Distributed.Data
             return new Tuple<IEnumerable<T>, long>(records, totalCount);
         }
 
+        public async Task<IEnumerable<T>> GetAsync(string collectionId, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true)
+        {
+            Collection = Context.Database.GetCollection<T>(collectionId);
+
+            if (condition == null) condition = _ => true;
+            var query = Collection.Find<T>(condition);
+
+            IOrderedFindFluent<T, T> SortedResults;
+            if (orderBy != null && orderByDescending) SortedResults = query.SortByDescending(orderBy);
+            else if (orderBy != null && !orderByDescending) SortedResults = query.SortBy(orderBy);
+            else SortedResults = query.SortByDescending(x => x.CreationDate);
+
+            return await SortedResults.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAsync(string collectionId, FilterDefinition<T> filter, SortDefinition<T> sort = null)
+        {
+            Collection = Context.Database.GetCollection<T>(collectionId);
+            var query = Collection.Find<T>(filter);
+
+            if (sort == null) sort = Builders<T>.Sort.Descending(x => x.CreationDate);
+            return await query.Sort(sort).ToListAsync();
+        }
+
         public async Task<InsertResult<T>> InsertAsync(T instance)
         {
             var CollectionIds = Master.RetriveCollectionFromMaster(instance);

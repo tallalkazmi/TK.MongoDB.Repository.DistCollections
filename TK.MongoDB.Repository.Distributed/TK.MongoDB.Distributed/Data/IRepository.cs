@@ -46,6 +46,25 @@ namespace TK.MongoDB.Distributed.Data
         Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, FilterDefinition<T> filter, SortDefinition<T> sort = null);
 
         /// <summary>
+        /// Gets document by condition specified or gets all documents if condition is not passed.
+        /// </summary>
+        /// <param name="collectionId">Targeted Collection Id</param>
+        /// <param name="condition">Lamda expression</param>
+        /// <param name="orderBy">Order by column</param>
+        /// <param name="orderByDescending">Order By Descending</param>
+        /// <returns>Enumerable records</returns>
+        Task<IEnumerable<T>> GetAsync(string collectionId, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true);
+
+        /// <summary>
+        /// Gets document by condition specified or gets all documents if condition is not passed.
+        /// </summary>
+        /// <param name="collectionId">Targeted Collection Id</param>
+        /// <param name="filter">Filter definition</param>
+        /// <param name="sort">Sort definition</param>
+        /// <returns>Enumerable records</returns>
+        Task<IEnumerable<T>> GetAsync(string collectionId, FilterDefinition<T> filter, SortDefinition<T> sort = null);
+
+        /// <summary>
         /// Inserts single record.
         /// </summary>
         /// <param name="instance">Document</param>
