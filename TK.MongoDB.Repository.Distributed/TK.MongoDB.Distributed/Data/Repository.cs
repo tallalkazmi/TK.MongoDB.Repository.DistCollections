@@ -180,6 +180,7 @@ namespace TK.MongoDB.Distributed.Data
             if (condition == null) condition = _ => true;
             return await Collection.CountDocumentsAsync(condition);
         }
+
         public async Task<long> CountAsync(string collectionId, FilterDefinition<T> filter)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);
