@@ -84,7 +84,7 @@ namespace TK.MongoDB.Distributed.Test
             Console.WriteLine($"Output:\nTotal: {result.Item2}\n{JToken.Parse(JsonConvert.SerializeObject(result.Item1)).ToString(Formatting.Indented)}");
         }
 
-        [TestMethod]
+        //[TestMethod]
         public async Task SearchInArray()
         {
             List<Guid> guids = new List<Guid>()
