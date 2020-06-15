@@ -35,7 +35,7 @@ namespace TK.MongoDB.Distributed.Data
         Task<Tuple<IEnumerable<T>, long>> GetAsync(string collectionId, int currentPage, int pageSize, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true);
 
         /// <summary>
-        /// Gets document by condition specified or gets all documents if condition is not passed. Paged records.
+        /// Gets document by filter specified. Paged records.
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="currentPage">Page number</param>
@@ -56,7 +56,7 @@ namespace TK.MongoDB.Distributed.Data
         Task<IEnumerable<T>> GetAsync(string collectionId, Expression<Func<T, bool>> condition = null, Expression<Func<T, object>> orderBy = null, bool orderByDescending = true);
 
         /// <summary>
-        /// Gets document by condition specified or gets all documents if condition is not passed.
+        /// Gets document by filter specified.
         /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="filter">Filter definition</param>
@@ -111,6 +111,14 @@ namespace TK.MongoDB.Distributed.Data
         /// <param name="condition">Lamda expression</param>
         /// <returns>Count</returns>
         Task<long> CountAsync(string collectionId, Expression<Func<T, bool>> condition = null);
+
+        /// <summary>
+        /// Counts documents based on filter specifed.
+        /// </summary>
+        /// <param name="collectionId">Targeted Collection Id</param>
+        /// <param name="filter">Filter definition</param>
+        /// <returns>Count</returns>
+        Task<long> CountAsync(string collectionId, FilterDefinition<T> filter);
 
         /// <summary>
         /// Checks if the document exists based on the condition specified.

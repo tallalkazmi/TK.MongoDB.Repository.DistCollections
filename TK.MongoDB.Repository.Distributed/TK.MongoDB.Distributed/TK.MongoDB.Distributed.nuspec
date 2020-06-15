@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/tallalkazmi/TK.MongoDB.Repository.Distributed</projectUrl>
     <description>$description$</description>
     <releaseNotes>
-      Bulk update method added to repository.
+      Count method with Filter Definition added to repository.
     </releaseNotes>
     <copyright>$copyright$</copyright>
     <tags>mongodb repository distributed collections</tags>
