@@ -187,19 +187,40 @@ public class Message : BaseEntity
    bool result = await MessageRepository.UpdateAsync(CollectionId, message);
    ```
 
-6. Delete *asynchronous* (by Id)
+6. Bulk Update *asynchronous*
+
+   ```c#
+   long updatedCount = 0;
+
+   //Search messages which are not read by the current user.
+   FilterDefinition<Message> filter = "{ Read : { $not: { $elemMatch : { k : '" + CurrentUser.Id.ToString() + "' } } } }";
+   IEnumerable<Message> messages = await MessageRepository.GetAsync(channelId, filter);
+   IEnumerable<Message> emptyReads = await MessageRepository.GetAsync(channelId, x => x.Read == new Dictionary<string, DateTime>());
+   messages = messages.Union(emptyReads);
+   
+   if (messages != null && messages.Count() != 0)
+   {
+       //Bulk update current user to read list
+       messages.ToList().ForEach(x => x.Read.Add(CurrentUser.Id.ToString(), DateTime.UtcNow));
+   
+       //Bulk write
+       updatedCount = await MessageRepository.BulkUpdateAsync(channelId, messages);
+   }
+   ```
+   
+7. Delete *asynchronous* (by Id)
 
    ```c#
    bool result = await MessageRepository.DeleteAsync(CollectionId, new ObjectId("5e36998998d2c1540ca23894"));
    ```
 
-7. Count *asynchronous* 
+8. Count *asynchronous* 
 
    ```c#
    long result = await MessageRepository.CountAsync(CollectionId);
    ```
 
-8. Exists *asynchronous* (using LINQ Expression)
+9. Exists *asynchronous* (using LINQ Expression)
 
    ```c#
    bool result = await MessageRepository.ExistsAsync(CollectionId, x => x.Text == "abc");
