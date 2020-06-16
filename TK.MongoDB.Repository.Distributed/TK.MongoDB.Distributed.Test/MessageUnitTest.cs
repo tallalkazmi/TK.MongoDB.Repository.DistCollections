@@ -134,6 +134,31 @@ namespace TK.MongoDB.Distributed.Test
             Assert.IsInstanceOfType(result.Result, typeof(Message));
         }
 
+        [TestMethod]
+        public void Insert2()
+        {
+            Dictionary<Guid, DateTime> Read = new Dictionary<Guid, DateTime>()
+            {
+                { Guid.Parse("6B9F4B43-5F78-E811-80C7-000C29DADC00"), DateTime.UtcNow }
+            };
+
+            MasterSettings.SetProperties(new Dictionary<string, object>() { { "CreatedBy", Guid.Parse("FC09E7EE-5E78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.BeforeInsert);
+            //MasterSettings.SetProperties(new Dictionary<string, object>() { { "CreatedBy", Guid.Parse("6B9F4B43-5F78-E811-80C7-000C29DADC00") } }, MasterSettings.Triggers.AfterInsert);
+            Message message = new Message()
+            {
+                Text = $"Test message # {DateTime.UtcNow.ToShortTimeString()}",
+                Client = 1,
+                Caterer = 1,
+                Read = Read
+            };
+
+            InsertResult<Message> result = MessageRepository.Insert(message);
+            Console.WriteLine($"Success:{result.Success}\nCollectionId:{result.CollectionId}\nInserted:\n{JToken.Parse(JsonConvert.SerializeObject(result.Result)).ToString(Formatting.Indented)}");
+
+            Assert.IsNotNull(result.Result);
+            Assert.IsInstanceOfType(result.Result, typeof(Message));
+        }
+
         //[TestMethod]
         public async Task Update()
         {

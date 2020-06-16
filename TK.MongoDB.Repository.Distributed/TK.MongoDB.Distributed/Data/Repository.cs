@@ -97,6 +97,20 @@ namespace TK.MongoDB.Distributed.Data
             return new InsertResult<T>(CollectionIds.RetrivedCollectionId, CollectionIds.ParentCollectionId, instance);
         }
 
+        public InsertResult<T> Insert(T instance)
+        {
+            var CollectionIds = Master.RetriveCollectionFromMaster(instance);
+            Collection = Context.Database.GetCollection<T>(CollectionIds.RetrivedCollectionId);
+
+            instance.Id = ObjectId.GenerateNewId();
+            instance.CreationDate = DateTime.UtcNow;
+            instance.UpdationDate = DateTime.UtcNow;
+            Collection.InsertOne(instance);
+
+            Master.SetUpdateDateTime(CollectionIds.RetrivedCollectionId);
+            return new InsertResult<T>(CollectionIds.RetrivedCollectionId, CollectionIds.ParentCollectionId, instance);
+        }
+
         public async Task<InsertResult<T>> InsertAsync(string collectionId, T instance)
         {
             Collection = Context.Database.GetCollection<T>(collectionId);

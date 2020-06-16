@@ -74,6 +74,13 @@ namespace TK.MongoDB.Distributed.Data
         /// <summary>
         /// Inserts single record.
         /// </summary>
+        /// <param name="instance">Document</param>
+        /// <returns>Document</returns>
+        InsertResult<T> Insert(T instance);
+
+        /// <summary>
+        /// Inserts single record.
+        /// </summary>
         /// <param name="collectionId">Targeted Collection Id</param>
         /// <param name="instance">Document</param>
         /// <returns>Document</returns>
