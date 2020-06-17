@@ -19,6 +19,13 @@ namespace TK.MongoDB.Distributed.Data
         Task<BsonDocument> FindAsync(FilterDefinition<BsonDocument> filter);
 
         /// <summary>
+        /// Gets a single document.
+        /// </summary>
+        /// <param name="filter">Filter Definition</param>
+        /// <returns>Document</returns>
+        BsonDocument Find(FilterDefinition<BsonDocument> filter);
+
+        /// <summary>
         /// Gets all documents
         /// </summary>
         /// <param name="currentPage">Page number</param>
