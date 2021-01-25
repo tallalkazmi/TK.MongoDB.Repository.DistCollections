@@ -1,4 +1,10 @@
 # TK.MongoDB.Repository.Distributed
+[![Nuget](https://img.shields.io/nuget/v/TK.MongoDB.Repository.DistrubutedCollections)](https://www.nuget.org/packages/TK.MongoDB.Repository.DistrubutedCollections) 
+[![Nuget](https://img.shields.io/nuget/dt/TK.MongoDB.Repository.DistrubutedCollections)](https://www.nuget.org/packages/TK.MongoDB.Repository.DistrubutedCollections)
+![Azure DevOps builds](https://img.shields.io/azure-devops/build/tallalkazmi/79c589e2-20be-4ad6-9b5a-90be5ddc7916/3) 
+![Azure DevOps tests](https://img.shields.io/azure-devops/tests/tallalkazmi/79c589e2-20be-4ad6-9b5a-90be5ddc7916/3) 
+![Azure DevOps releases](https://img.shields.io/azure-devops/release/tallalkazmi/79c589e2-20be-4ad6-9b5a-90be5ddc7916/3/3)
+
 Repository pattern implementation with ***distributed collections*** of MongoDB in .NET Framework
 
 ## Intro
